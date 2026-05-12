@@ -254,7 +254,7 @@ function EventPage() {
             </p>
             <p className="text-lg font-bold">
               {totalQty === 0
-                ? formatPrice(Math.min(...event.ticketTypes.filter((t) => t.available).map((t) => t.price)))
+                ? formatPrice(Math.min(...event.ticketTypes.filter((t: TicketType) => t.available).map((t: TicketType) => t.price)))
                 : formatPrice(total)}
             </p>
           </div>
