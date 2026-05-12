@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { getOrganisation, getEventsByOrg, formatDayMonth } from "@/lib/tickets-data";
+import { getOrganisation, getEventsByOrg, formatDayMonth, type Event, type Fixture } from "@/lib/tickets-data";
 
 export const Route = createFileRoute("/orgs/$orgId")({
   loader: ({ params }) => {
@@ -71,7 +71,7 @@ function OrgPage() {
           <p className="text-muted-foreground">No upcoming events at the moment.</p>
         ) : (
           <div className="space-y-4">
-            {events.map((ev) => (
+            {events.map((ev: Event) => (
               <Link
                 key={ev.id}
                 to="/events/$eventId"
@@ -96,7 +96,7 @@ function OrgPage() {
                       <p className="text-sm text-muted-foreground">{ev.tagline}</p>
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      {ev.fixtures.slice(0, 3).map((f) => (
+                      {ev.fixtures.slice(0, 3).map((f: Fixture) => (
                         <span
                           key={f.id}
                           className="text-xs px-2.5 py-1 bg-surface border border-border rounded-full font-medium"
