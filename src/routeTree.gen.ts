@@ -10,33 +10,68 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as OrgsOrgIdRouteImport } from './routes/orgs.$orgId'
+import { Route as EventsEventIdRouteImport } from './routes/events.$eventId'
+import { Route as CheckoutEventIdRouteImport } from './routes/checkout.$eventId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OrgsOrgIdRoute = OrgsOrgIdRouteImport.update({
+  id: '/orgs/$orgId',
+  path: '/orgs/$orgId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventsEventIdRoute = EventsEventIdRouteImport.update({
+  id: '/events/$eventId',
+  path: '/events/$eventId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutEventIdRoute = CheckoutEventIdRouteImport.update({
+  id: '/checkout/$eventId',
+  path: '/checkout/$eventId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/checkout/$eventId': typeof CheckoutEventIdRoute
+  '/events/$eventId': typeof EventsEventIdRoute
+  '/orgs/$orgId': typeof OrgsOrgIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/checkout/$eventId': typeof CheckoutEventIdRoute
+  '/events/$eventId': typeof EventsEventIdRoute
+  '/orgs/$orgId': typeof OrgsOrgIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/checkout/$eventId': typeof CheckoutEventIdRoute
+  '/events/$eventId': typeof EventsEventIdRoute
+  '/orgs/$orgId': typeof OrgsOrgIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/checkout/$eventId' | '/events/$eventId' | '/orgs/$orgId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/checkout/$eventId' | '/events/$eventId' | '/orgs/$orgId'
+  id:
+    | '__root__'
+    | '/'
+    | '/checkout/$eventId'
+    | '/events/$eventId'
+    | '/orgs/$orgId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CheckoutEventIdRoute: typeof CheckoutEventIdRoute
+  EventsEventIdRoute: typeof EventsEventIdRoute
+  OrgsOrgIdRoute: typeof OrgsOrgIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,22 +83,36 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/orgs/$orgId': {
+      id: '/orgs/$orgId'
+      path: '/orgs/$orgId'
+      fullPath: '/orgs/$orgId'
+      preLoaderRoute: typeof OrgsOrgIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/events/$eventId': {
+      id: '/events/$eventId'
+      path: '/events/$eventId'
+      fullPath: '/events/$eventId'
+      preLoaderRoute: typeof EventsEventIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout/$eventId': {
+      id: '/checkout/$eventId'
+      path: '/checkout/$eventId'
+      fullPath: '/checkout/$eventId'
+      preLoaderRoute: typeof CheckoutEventIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CheckoutEventIdRoute: CheckoutEventIdRoute,
+  EventsEventIdRoute: EventsEventIdRoute,
+  OrgsOrgIdRoute: OrgsOrgIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
