@@ -40,13 +40,13 @@ function CheckoutPage() {
   const [step, setStep] = useState<1 | 2>(1);
   const [done, setDone] = useState(false);
 
-  const fixture = event.fixtures.find((f) => f.id === search.fixture) ?? event.fixtures[0];
+  const fixture = event.fixtures.find((f: { id: string }) => f.id === search.fixture) ?? event.fixtures[0];
 
   const items = event.ticketTypes
-    .map((t) => ({ ticket: t, qty: Number(search[t.id] || 0) }))
-    .filter((i) => i.qty > 0);
+    .map((t: TicketType) => ({ ticket: t, qty: Number(search[t.id] || 0) }))
+    .filter((i: { qty: number }) => i.qty > 0);
 
-  const subtotal = items.reduce((s, i) => s + i.qty * i.ticket.price, 0);
+  const subtotal = items.reduce((s: number, i: { ticket: TicketType; qty: number }) => s + i.qty * i.ticket.price, 0);
   const fee = Math.round(subtotal * 0.06 * 100) / 100;
   const total = subtotal + fee;
 

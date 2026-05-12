@@ -9,6 +9,7 @@ import {
   formatDayMonth,
   formatPrice,
   type TicketType,
+  type Fixture,
 } from "@/lib/tickets-data";
 import mapImg from "@/assets/venue-map.jpg";
 
@@ -49,9 +50,9 @@ function EventPage() {
   const [qty, setQty] = useState<Record<string, number>>({});
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
-  const fixture = event.fixtures.find((f) => f.id === fixtureId)!;
+  const fixture = event.fixtures.find((f: Fixture) => f.id === fixtureId)!;
   const total = useMemo(
-    () => event.ticketTypes.reduce((sum, t) => sum + (qty[t.id] || 0) * t.price, 0),
+    () => event.ticketTypes.reduce((sum: number, t: TicketType) => sum + (qty[t.id] || 0) * t.price, 0),
     [qty, event.ticketTypes]
   );
   const totalQty = useMemo(
@@ -136,7 +137,7 @@ function EventPage() {
             {/* Fixtures */}
             <h2 className="font-semibold text-lg mb-4">Choose a date</h2>
             <div className="space-y-3 mb-12">
-              {event.fixtures.map((f) => {
+              {event.fixtures.map((f: Fixture) => {
                 const active = f.id === fixtureId;
                 return (
                   <button
@@ -180,7 +181,7 @@ function EventPage() {
             {/* FAQ */}
             <h2 className="font-semibold text-lg mb-4">Frequently asked</h2>
             <div className="border-y border-border divide-y divide-border mb-10">
-              {event.faq.map((f, i) => {
+              {event.faq.map((f: { q: string; a: string }, i: number) => {
                 const open = openFaq === i;
                 return (
                   <div key={i}>
