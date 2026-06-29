@@ -33,3 +33,6 @@ dist-ssr
 
 # Lovable project marker
 .lovable/
+
+# Local agent settings
+.claude/
