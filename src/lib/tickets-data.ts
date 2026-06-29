@@ -42,14 +42,15 @@ export type Organisation = {
   swatch: string;     // tailwind bg class for circle
   accent: string;     // hex
   description: string;
+  location?: string;
 };
 
 export const organisations: Organisation[] = [
-  { id: "apex-arenas", name: "Apex Arenas", short: "Live music & arena tours", initial: "A", swatch: "bg-blue-100", accent: "#2563eb", description: "World-class arena promoter bringing global tours to UK stages." },
-  { id: "grand-theatre", name: "Grand Theatre", short: "Theatre & performing arts", initial: "G", swatch: "bg-rose-100", accent: "#e11d48", description: "Award-winning theatre productions in the heart of the West End." },
-  { id: "city-fc", name: "City FC", short: "Football fixtures & cup ties", initial: "C", swatch: "bg-emerald-100", accent: "#059669", description: "Official ticketing for City FC home fixtures and cup matches." },
-  { id: "vibe-records", name: "Vibe Records", short: "Festivals & label nights", initial: "V", swatch: "bg-amber-100", accent: "#d97706", description: "Independent label hosting festivals and intimate club shows." },
-  { id: "art-basel", name: "Art Basel UK", short: "Exhibitions & previews", initial: "B", swatch: "bg-purple-100", accent: "#7c3aed", description: "Contemporary art fairs, gallery previews and collector events." },
+  { id: "apex-arenas", name: "Apex Arenas", short: "Live music & arena tours", initial: "A", swatch: "bg-blue-100", accent: "#2563eb", description: "World-class arena promoter bringing global tours to UK stages.", location: "London, UK" },
+  { id: "grand-theatre", name: "Grand Theatre", short: "Theatre & performing arts", initial: "G", swatch: "bg-rose-100", accent: "#e11d48", description: "Award-winning theatre productions in the heart of the West End.", location: "London, UK" },
+  { id: "city-fc", name: "City FC", short: "Football fixtures & cup ties", initial: "C", swatch: "bg-emerald-100", accent: "#059669", description: "Official ticketing for City FC home fixtures and cup matches.", location: "Manchester, UK" },
+  { id: "vibe-records", name: "Vibe Records", short: "Festivals & label nights", initial: "V", swatch: "bg-amber-100", accent: "#d97706", description: "Independent label hosting festivals and intimate club shows.", location: "Bristol, UK" },
+  { id: "art-basel", name: "Art Basel UK", short: "Exhibitions & previews", initial: "B", swatch: "bg-purple-100", accent: "#7c3aed", description: "Contemporary art fairs, gallery previews and collector events.", location: "London, UK" },
 ];
 
 export const events: Event[] = [
@@ -59,7 +60,7 @@ export const events: Event[] = [
     name: "Neon Horizons: World Tour 2026",
     tagline: "An immersive 360° stadium experience",
     description:
-      "Experience the multi-platinum artist in an immersive 360-degree stadium performance. Featuring special guests and state-of-the-art visual production.",
+      "Experience the multi-platinum artist in an immersive 360-degree stadium performance that redefines what a live show can be. The stage sits at the centre of the arena, surrounded on every side, so wherever you're seated you're never more than a few rows from the action. Featuring a roster of special guests and a state-of-the-art visual production, the evening moves through the artist's biggest anthems alongside brand-new material from the forthcoming record. Expect a fully synchronised light rig, a 360-degree projection canopy and a sound design tuned specifically to the venue's acoustics. Doors open early so you can explore the concourse, grab merchandise from the exclusive tour pop-up and find your seats before the support act takes the stage. This is the only UK date on the world tour, and demand is expected to be exceptional — once a tier sells out it will not be restocked. Whether you're standing on the floor or seated in the upper tiers, every ticket includes access to the full production from the opening number to the encore.",
     venue: "City Arena",
     address: "Stadium Way, London SE1 9AL",
     image: concertImg,
@@ -88,7 +89,7 @@ export const events: Event[] = [
     name: "City FC vs United Rovers",
     tagline: "Premier League — Matchday 12",
     description:
-      "A heavyweight derby fixture in the league. Choose home end seating, family stand or hospitality across multiple matchdays this season.",
+      "A heavyweight derby fixture that always defines the season. City FC welcome United Rovers to the Riverside Stadium for a Matchday 12 clash with a place at the top of the table on the line. These two sides have traded blows for over a century, and the atmosphere on derby day is unlike anything else in the league. Choose from a range of areas to suit how you like to watch the game: stand with the most vocal supporters in the Home End, bring the whole family to the dedicated Family Stand, or treat yourself to padded seating and matchday dining in a Hospitality Box. Supporter coaches run round-trip from the city centre, so you can leave the car at home and travel with fellow fans. Gates open ninety minutes before kick-off with live entertainment, food stalls and the chance to watch the warm-up pitchside. Tickets are available across multiple matchdays this season, but derby fixtures historically sell out within hours of release — secure your seats early to avoid disappointment.",
     venue: "Riverside Stadium",
     address: "Quay Road, Manchester M3 4LQ",
     image: footballImg,
@@ -116,7 +117,7 @@ export const events: Event[] = [
     name: "Midnight Prelude",
     tagline: "A new play by Eleanor Vance",
     description:
-      "A haunting new chamber drama performed in the Grand Theatre's intimate Studio space. Limited run — six performances only.",
+      "A haunting new chamber drama from acclaimed playwright Eleanor Vance, performed in the Grand Theatre's intimate Studio space. Set over a single sleepless night, the play follows three estranged siblings as they gather in their late mother's house to divide what remains — and unearth the secrets she kept from each of them. Vance's spare, lyrical writing has drawn comparisons to the very best of contemporary British theatre, and this world premiere production is staged just feet from the audience, making every whispered confession feel almost unbearably close. The ninety-five-minute piece runs without an interval, holding its tension from the first line to the last. With only six performances in this strictly limited run and the Studio seating fewer than two hundred, this is a rare chance to see major new writing in the most personal of settings. Stalls, Dress Circle and a small number of restricted-view seats are available, and we recommend booking early as previous Vance productions have sold out well in advance.",
     venue: "Grand Theatre Studio",
     address: "37 Drury Lane, London WC2B 5LZ",
     image: theatreImg,

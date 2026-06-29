@@ -9,19 +9,19 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as PromoRouteImport } from './routes/promo'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as OrgsOrgIdRouteImport } from './routes/orgs.$orgId'
 import { Route as EventsEventIdRouteImport } from './routes/events.$eventId'
 import { Route as CheckoutEventIdRouteImport } from './routes/checkout.$eventId'
 
+const PromoRoute = PromoRouteImport.update({
+  id: '/promo',
+  path: '/promo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OrgsOrgIdRoute = OrgsOrgIdRouteImport.update({
-  id: '/orgs/$orgId',
-  path: '/orgs/$orgId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EventsEventIdRoute = EventsEventIdRouteImport.update({
@@ -37,57 +37,52 @@ const CheckoutEventIdRoute = CheckoutEventIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/promo': typeof PromoRoute
   '/checkout/$eventId': typeof CheckoutEventIdRoute
   '/events/$eventId': typeof EventsEventIdRoute
-  '/orgs/$orgId': typeof OrgsOrgIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/promo': typeof PromoRoute
   '/checkout/$eventId': typeof CheckoutEventIdRoute
   '/events/$eventId': typeof EventsEventIdRoute
-  '/orgs/$orgId': typeof OrgsOrgIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/promo': typeof PromoRoute
   '/checkout/$eventId': typeof CheckoutEventIdRoute
   '/events/$eventId': typeof EventsEventIdRoute
-  '/orgs/$orgId': typeof OrgsOrgIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/checkout/$eventId' | '/events/$eventId' | '/orgs/$orgId'
+  fullPaths: '/' | '/promo' | '/checkout/$eventId' | '/events/$eventId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/checkout/$eventId' | '/events/$eventId' | '/orgs/$orgId'
-  id:
-    | '__root__'
-    | '/'
-    | '/checkout/$eventId'
-    | '/events/$eventId'
-    | '/orgs/$orgId'
+  to: '/' | '/promo' | '/checkout/$eventId' | '/events/$eventId'
+  id: '__root__' | '/' | '/promo' | '/checkout/$eventId' | '/events/$eventId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  PromoRoute: typeof PromoRoute
   CheckoutEventIdRoute: typeof CheckoutEventIdRoute
   EventsEventIdRoute: typeof EventsEventIdRoute
-  OrgsOrgIdRoute: typeof OrgsOrgIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/promo': {
+      id: '/promo'
+      path: '/promo'
+      fullPath: '/promo'
+      preLoaderRoute: typeof PromoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/orgs/$orgId': {
-      id: '/orgs/$orgId'
-      path: '/orgs/$orgId'
-      fullPath: '/orgs/$orgId'
-      preLoaderRoute: typeof OrgsOrgIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/events/$eventId': {
@@ -109,10 +104,20 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  PromoRoute: PromoRoute,
   CheckoutEventIdRoute: CheckoutEventIdRoute,
   EventsEventIdRoute: EventsEventIdRoute,
-  OrgsOrgIdRoute: OrgsOrgIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
