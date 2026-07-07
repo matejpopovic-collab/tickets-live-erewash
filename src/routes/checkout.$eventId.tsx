@@ -72,7 +72,7 @@ function CheckoutPage() {
             </Link>
           }
         />
-        <div className="max-w-md mx-auto p-12 text-center">
+        <div className="max-w-5xl mx-auto px-4 py-12 text-center">
           <h1 className="text-2xl font-bold mb-2">No tickets selected</h1>
           <p className="text-muted-foreground mb-6">Pick your tickets to continue.</p>
           <Link
@@ -103,7 +103,7 @@ function CheckoutPage() {
             </Link>
           }
         />
-        <div className="max-w-md mx-auto px-4 py-20 text-center">
+        <div className="max-w-5xl mx-auto px-4 py-20 text-center">
           <div className="size-16 rounded-full bg-success/15 grid place-items-center mx-auto mb-6">
             <Check className="size-8 text-success" strokeWidth={2.5} />
           </div>

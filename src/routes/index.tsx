@@ -26,7 +26,7 @@ function Index() {
 
   return (
     <div className="min-h-screen bg-white">
-      <SiteHeader containerClassName="max-w-5xl px-4 md:px-6" />
+      <SiteHeader containerClassName="max-w-5xl px-4" />
 
       {/* Hero banner */}
       <header className="relative overflow-hidden bg-surface" style={{ height: "435px" }}>
@@ -52,7 +52,7 @@ function Index() {
       </header>
 
       {/* Events list */}
-      <section className="px-4 md:px-6 max-w-5xl mx-auto py-10">
+      <section className="px-4 max-w-5xl mx-auto py-10">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold">
             {activeOrg ? `${activeOrg.name} events` : "Upcoming events"}
@@ -107,7 +107,7 @@ function Index() {
         </div>
       </section>
 
-      <SiteFooter containerClassName="max-w-5xl px-4 md:px-6" />
+      <SiteFooter containerClassName="max-w-5xl px-4" />
     </div>
   );
 }
