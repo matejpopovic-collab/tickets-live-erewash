@@ -41,6 +41,8 @@ function CheckoutPage() {
   const [step, setStep] = useState<1 | 2>(1);
   const [done, setDone] = useState(false);
   const [email, setEmail] = useState("");
+  const [confirmEmail, setConfirmEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
   const [orderRef] = useState(() => `TL-${Math.floor(100000 + Math.random() * 900000)}`);
 
   const fixture = event.fixtures.find((f: { id: string }) => f.id === search.fixture) ?? event.fixtures[0];
@@ -164,23 +166,55 @@ function CheckoutPage() {
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
+                    if (email !== confirmEmail) {
+                      setEmailError("Email addresses do not match.");
+                      return;
+                    }
+                    setEmailError("");
                     setStep(2);
                   }}
                   className="space-y-4"
                 >
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <Field label="First name" name="firstName" placeholder="John" required />
                     <Field label="Last name" name="lastName" placeholder="Smith" required />
+                    <Field
+                      label="Email"
+                      name="email"
+                      type="email"
+                      placeholder="john@example.com"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail((e.target as HTMLInputElement).value)}
+                    />
+                    <Field
+                      label="Confirm email"
+                      name="confirmEmail"
+                      type="email"
+                      placeholder="john@example.com"
+                      required
+                      value={confirmEmail}
+                      onChange={(e) => setConfirmEmail((e.target as HTMLInputElement).value)}
+                    />
+                    <Field label="Telephone" name="phone" type="tel" placeholder="+44 000 0000 000" required />
+                    <Field label="Address" name="address" placeholder="123 High Street" required />
+                    <Field label="City" name="city" placeholder="Ilkeston" required />
+                    <Field label="County" name="county" placeholder="Derbyshire" />
+                    <Field label="Postal code" name="postcode" placeholder="DE7 8AA" required />
+                    <SelectField label="Country" name="country" required defaultValue="United Kingdom">
+                      <option>United Kingdom</option>
+                      <option>Ireland</option>
+                      <option>France</option>
+                      <option>Germany</option>
+                      <option>Spain</option>
+                      <option>Netherlands</option>
+                      <option>United States</option>
+                      <option>Canada</option>
+                      <option>Australia</option>
+                      <option>Other</option>
+                    </SelectField>
                   </div>
-                  <Field
-                    label="Email"
-                    name="email"
-                    type="email"
-                    placeholder="john@example.com"
-                    required
-                    onChange={(e) => setEmail((e.target as HTMLInputElement).value)}
-                  />
-                  <Field label="Phone" name="phone" type="tel" placeholder="+44 000 0000 000" />
+                  {emailError && <p className="text-sm text-destructive">{emailError}</p>}
                   <button
                     type="submit"
                     className="w-full bg-accent-blue text-white font-semibold py-3.5 rounded-xl mt-2 flex items-center justify-center gap-2 hover:opacity-90 transition disabled:opacity-40"
@@ -312,6 +346,15 @@ function StepIndicator({ step, label, active, completed }: { step: number; label
   );
 }
 
+function FieldLabel({ label, required }: { label: string; required?: boolean }) {
+  return (
+    <span className="block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
+      {label}
+      {required && <span className="text-accent-blue"> *</span>}
+    </span>
+  );
+}
+
 function Field({
   label,
   onChange,
@@ -319,14 +362,30 @@ function Field({
 }: React.InputHTMLAttributes<HTMLInputElement> & { label: string }) {
   return (
     <label className="block">
-      <span className="block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
-        {label}
-      </span>
+      <FieldLabel label={label} required={props.required} />
       <input
         {...props}
         onChange={onChange}
         className="w-full h-11 bg-surface border border-border rounded-lg px-3 focus:outline-none focus:ring-2 focus:ring-accent-blue/30 focus:border-accent-blue transition-all"
       />
+    </label>
+  );
+}
+
+function SelectField({
+  label,
+  children,
+  ...props
+}: React.SelectHTMLAttributes<HTMLSelectElement> & { label: string }) {
+  return (
+    <label className="block">
+      <FieldLabel label={label} required={props.required} />
+      <select
+        {...props}
+        className="w-full h-11 bg-surface border border-border rounded-lg px-3 focus:outline-none focus:ring-2 focus:ring-accent-blue/30 focus:border-accent-blue transition-all"
+      >
+        {children}
+      </select>
     </label>
   );
 }
