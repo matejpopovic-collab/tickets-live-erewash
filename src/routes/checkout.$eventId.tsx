@@ -60,7 +60,7 @@ function CheckoutPage() {
     return (
       <div className="min-h-screen bg-white">
         <SiteHeader
-          containerClassName="max-w-4xl px-4"
+          containerClassName="max-w-5xl px-4"
           back={
             <Link
               to="/events/$eventId"
@@ -91,7 +91,7 @@ function CheckoutPage() {
     return (
       <div className="min-h-screen bg-white">
         <SiteHeader
-          containerClassName="max-w-4xl px-4"
+          containerClassName="max-w-5xl px-4"
           back={
             <Link
               to="/events/$eventId"
@@ -131,7 +131,7 @@ function CheckoutPage() {
   return (
     <div className="min-h-screen bg-surface pb-12">
       <SiteHeader
-        containerClassName="max-w-4xl px-4"
+        containerClassName="max-w-5xl px-4"
         back={
           <Link
             to="/events/$eventId"
@@ -145,7 +145,7 @@ function CheckoutPage() {
         cartCount={totalQty}
       />
 
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="max-w-5xl mx-auto px-4 py-8">
         {/* Step indicator */}
         <div className="flex items-center mb-8">
           <StepIndicator step={1} label="Your details" active={step === 1} completed={step > 1} />
