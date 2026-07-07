@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import {
@@ -73,33 +73,13 @@ function EventPage() {
 
   return (
     <div className="min-h-screen bg-white pb-28 md:pb-0">
-      <SiteHeader
-        containerClassName="max-w-5xl px-4"
-        back={
-          <Link
-            to="/"
-            className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <ChevronLeft className="size-3.5" />
-            Back to events
-          </Link>
-        }
-      />
-
-      {/* Breadcrumb */}
-      <div className="py-2.5 border-b border-border bg-surface/50">
-        <div className="max-w-5xl mx-auto px-4 flex items-center gap-2 text-xs text-muted-foreground">
-          <Link to="/" className="hover:text-foreground">Home</Link>
-          <span>/</span>
-          <span className="text-foreground font-medium truncate">{event.name}</span>
-        </div>
-      </div>
+      <SiteHeader containerClassName="max-w-5xl px-4" cartCount={totalQty} />
 
       {/* Hero */}
       <section className="px-4 max-w-5xl mx-auto pt-8">
         <div className="overflow-hidden rounded-2xl aspect-[16/8] bg-surface">
           <img
-            src={event.image}
+            src={event.heroImage ?? event.image}
             alt={event.name}
             width={1600}
             height={800}
@@ -110,7 +90,11 @@ function EventPage() {
         <div className="grid md:grid-cols-[1fr_360px] gap-10 mt-8">
           {/* Left: info */}
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2">{event.name}</h1>
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2">
+              {event.name.split(" - ").map((line, i) => (
+                <span key={i} className="block">{line}</span>
+              ))}
+            </h1>
             <p className="text-muted-foreground text-base leading-relaxed mb-6 max-w-xl">{event.tagline}</p>
 
             <h2 className="font-semibold text-base mb-3">Overview</h2>
@@ -178,7 +162,7 @@ function EventPage() {
                   <span className="text-muted-foreground">
                     Subtotal {totalQty > 0 && `(${totalQty} ${totalQty === 1 ? "ticket" : "tickets"})`}
                   </span>
-                  <span className="font-bold">{formatPrice(total)}</span>
+                  <span className="text-xl font-bold text-accent-blue">{formatPrice(total)}</span>
                 </div>
                 <button
                   onClick={goCheckout}
@@ -206,9 +190,9 @@ function EventPage() {
             <p className="text-[10px] uppercase font-medium text-muted-foreground tracking-wider">
               {totalQty === 0 ? "From" : "Subtotal"}
             </p>
-            <p className="text-lg font-bold">
+            <p className="text-xl font-bold text-accent-blue">
               {totalQty === 0
-                ? formatPrice(Math.min(...event.ticketTypes.filter((t: TicketType) => t.available).map((t: TicketType) => t.price)))
+                ? formatPrice(Math.min(...event.ticketTypes.filter((t: TicketType) => t.available && t.price > 0).map((t: TicketType) => t.price)))
                 : formatPrice(total)}
             </p>
           </div>
@@ -299,12 +283,12 @@ function TicketList({
             <div className={t.available ? "" : "opacity-50"}>
               <div className="flex items-center gap-2 flex-wrap">
                 <p className="font-semibold text-sm">{t.name}</p>
-                <AvailabilityBadge status={fixtureStatus} available={t.available} />
+                {t.id === "adult" && <AvailabilityBadge status={fixtureStatus} available={t.available} />}
               </div>
               {t.description && (
                 <p className="text-xs text-muted-foreground mt-0.5">{t.description}</p>
               )}
-              <p className="text-sm font-medium mt-1">{formatPrice(t.price)}</p>
+              <p className="text-base font-bold text-accent-blue mt-1">{formatPrice(t.price)}</p>
             </div>
             {t.available ? (
               <div className="flex items-center gap-2 shrink-0">

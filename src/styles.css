@@ -5,6 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap");
 
 /*
  * Design system definition.
@@ -164,4 +165,23 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
   }
+}
+
+.hero-title-fx {
+  font-family: "Bebas Neue", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  background-image: linear-gradient(180deg, #fdba74 0%, #f97316 35%, #dc2626 75%, #b91c1c 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-stroke: 2.5px #d4af37;
+  text-shadow:
+    1px 1px 0 #7f1d1d,
+    2px 2px 0 #7f1d1d,
+    3px 3px 0 #7f1d1d,
+    4px 4px 0 #7f1d1d,
+    5px 5px 0 #7f1d1d,
+    6px 6px 0 #7f1d1d,
+    8px 10px 14px rgba(0, 0, 0, 0.55);
 }

@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { events, organisations, formatDate, formatPrice, type Event, type Fixture } from "@/lib/tickets-data";
-import heroImg from "@/assets/event-football.jpg";
+import heroImg from "@/assets/event-bonfire.jpg";
 import { z } from "zod";
 
 export const Route = createFileRoute("/")({
@@ -37,14 +37,11 @@ function Index() {
         />
         <div className="absolute inset-0 bg-black/60" />
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
-          <p className="text-[11px] font-bold uppercase tracking-widest text-white/70 mb-4">
-            {activeOrg ? activeOrg.name : "Fiji Sports Council · Official Ticketing"}
-          </p>
-          <h1 className="text-5xl md:text-6xl font-bold text-white tracking-tight leading-tight max-w-2xl">
-            {activeOrg ? `${activeOrg.name} Events` : "Find Your Next Live Event"}
+          <h1 className="hero-title-fx text-5xl sm:text-6xl md:text-7xl leading-tight md:whitespace-nowrap">
+            {activeOrg ? `${activeOrg.name} Events` : "Blast from the Past"}
           </h1>
-          <p className="mt-4 text-white/70 text-base max-w-md">
-            {activeOrg ? activeOrg.short : "Browse verified organisers and book your tickets instantly"}
+          <p className="mt-4 text-white text-xl whitespace-nowrap">
+            {activeOrg ? activeOrg.short : "An Evening of Spectacular Fireworks, Bonfires & Live Entertainment"}
           </p>
           {activeOrg && (
             <Link to="/" className="mt-4 text-sm text-white/50 hover:text-white/80 underline underline-offset-2 transition-colors">
@@ -60,13 +57,12 @@ function Index() {
           <h2 className="text-2xl font-bold">
             {activeOrg ? `${activeOrg.name} events` : "Upcoming events"}
           </h2>
-          <span className="text-sm text-muted-foreground">{filteredEvents.length} events</span>
         </div>
 
         <div className="space-y-4">
           {filteredEvents.map((ev: Event) => {
             const f: Fixture = ev.fixtures[0];
-            const availablePrices = ev.ticketTypes.filter(t => t.available).map(t => t.price);
+            const availablePrices = ev.ticketTypes.filter(t => t.available && t.price > 0).map(t => t.price);
             const minPrice = availablePrices.length > 0 ? Math.min(...availablePrices) : null;
             return (
               <Link
