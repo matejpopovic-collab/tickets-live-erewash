@@ -8,8 +8,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap");
 
 @font-face {
-  font-family: "Burbank Big Condensed";
-  src: url("./assets/fonts/burbank-big-condensed-bold.woff2") format("woff2");
+  font-family: "Franchise Free";
+  src: url("./assets/fonts/franchise-bold.woff2") format("woff2");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -176,7 +176,7 @@
 }
 
 .hero-title-fx {
-  font-family: "Burbank Big Condensed", "Bebas Neue", sans-serif;
+  font-family: "Franchise Free", "Bebas Neue", sans-serif;
   text-transform: uppercase;
   letter-spacing: 0.02em;
   background-image: linear-gradient(180deg, #fdba74 0%, #f97316 35%, #dc2626 75%, #b91c1c 100%);
