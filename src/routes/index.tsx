@@ -40,8 +40,16 @@ function Index() {
           <h1 className="hero-title-fx leading-tight md:whitespace-nowrap">
             {activeOrg ? `${activeOrg.name} Events` : "Blast from the Past"}
           </h1>
-          <p className="mt-4 text-white text-xl whitespace-nowrap">
-            {activeOrg ? activeOrg.short : "An Evening of Spectacular Fireworks, Bonfires & Live Entertainment"}
+          <p className="mt-4 text-white text-[24px]">
+            {activeOrg ? (
+              activeOrg.short
+            ) : (
+              <>
+                An Evening of Spectacular Fireworks,
+                <br />
+                Bonfires &amp; Live Entertainment
+              </>
+            )}
           </p>
           {activeOrg && (
             <Link to="/" className="mt-4 text-sm text-white/50 hover:text-white/80 underline underline-offset-2 transition-colors">
