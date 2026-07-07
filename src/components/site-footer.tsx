@@ -26,14 +26,6 @@ export function SiteFooter({
               <li>Privacy Policy</li>
             </ul>
           </div>
-          <div>
-            <h4 className="font-bold text-sm mb-4 text-white">For organisations</h4>
-            <ul className="space-y-2 text-sm text-white/60">
-              <li>Sell Tickets</li>
-              <li>Pricing</li>
-              <li>White-label</li>
-            </ul>
-          </div>
         </div>
       </div>
       <div className={`${containerClassName} mx-auto pt-8 mt-8 border-t border-white/10 text-xs text-white/40`}>
