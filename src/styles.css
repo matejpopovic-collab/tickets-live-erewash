@@ -177,6 +177,8 @@
 
 .hero-title-fx {
   font-family: "Franchise Free", "Bebas Neue", sans-serif;
+  /* 100px on desktop; scales down on small screens so it doesn't clip/overflow. */
+  font-size: clamp(3rem, 12vw, 100px);
   text-transform: uppercase;
   letter-spacing: 0.02em;
   background-image: linear-gradient(180deg, #fdba74 0%, #f97316 35%, #dc2626 75%, #b91c1c 100%);

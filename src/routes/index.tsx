@@ -37,7 +37,7 @@ function Index() {
         />
         <div className="absolute inset-0 bg-black/60" />
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
-          <h1 className="hero-title-fx text-5xl sm:text-6xl md:text-7xl leading-tight md:whitespace-nowrap">
+          <h1 className="hero-title-fx leading-tight md:whitespace-nowrap">
             {activeOrg ? `${activeOrg.name} Events` : "Blast from the Past"}
           </h1>
           <p className="mt-4 text-white text-xl whitespace-nowrap">
