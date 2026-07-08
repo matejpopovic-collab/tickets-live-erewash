@@ -149,9 +149,9 @@ function CheckoutPage() {
         {/* Step indicator */}
         <div className="flex items-center mb-8">
           <StepIndicator step={1} label="Your details" active={step === 1} completed={step > 1} />
-          <div className="w-12 h-px bg-border mx-2" />
+          <div className="w-8 sm:w-12 h-px bg-border mx-2 sm:mx-3" />
           <StepIndicator step={2} label="Payment" active={step === 2} completed={false} />
-          <span className="ml-auto text-sm text-muted-foreground pl-6">
+          <span className="ml-auto pl-4 text-sm text-muted-foreground whitespace-nowrap hidden sm:block">
             Step <span className="font-semibold text-foreground">{step}</span> of 2
           </span>
         </div>
@@ -336,7 +336,7 @@ function StepIndicator({ step, label, active, completed }: { step: number; label
         {completed ? <Check className="size-3.5" strokeWidth={3} /> : step}
       </div>
       <span
-        className={`text-sm font-medium ${
+        className={`text-sm font-medium whitespace-nowrap ${
           active ? "text-foreground" : "text-muted-foreground"
         }`}
       >
