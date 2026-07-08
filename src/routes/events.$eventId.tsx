@@ -101,7 +101,7 @@ function EventPage() {
             <ExpandableText text={event.description} className="mb-8 max-w-xl" />
 
             {/* Key facts */}
-            <div className="grid grid-cols-3 gap-4 py-6 border-y border-border mb-6 bg-surface rounded-xl px-5">
+            <div className="flex flex-col divide-y divide-border sm:grid sm:grid-cols-3 sm:gap-4 sm:divide-y-0 py-2 sm:py-6 border-y border-border mb-6 bg-surface rounded-xl px-5">
               <Fact label="Date" value={formatDate(fixture.date)} />
               <Fact label="Time" value={fixture.doorsTime} />
               <Fact label="Venue" value={event.venue} />
@@ -237,9 +237,9 @@ function ExpandableText({ text, className = "" }: { text: string; className?: st
 
 function Fact({ label, value }: { label: string; value: string }) {
   return (
-    <div>
-      <p className="text-[10px] uppercase font-medium text-muted-foreground tracking-wider mb-1">{label}</p>
-      <p className="text-base font-semibold">{value}</p>
+    <div className="flex items-center justify-between gap-4 py-3 sm:block sm:py-0">
+      <p className="text-[10px] uppercase font-medium text-muted-foreground tracking-wider sm:mb-1">{label}</p>
+      <p className="text-base font-semibold text-right sm:text-left">{value}</p>
     </div>
   );
 }
