@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, ChevronDown } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import {
@@ -134,7 +134,7 @@ function EventPage() {
                       className="w-full flex items-center justify-between py-4 text-left cursor-pointer"
                     >
                       <span className="font-medium text-sm">{f.q}</span>
-                      <span className={`text-xl font-light transition-transform ${open ? "rotate-45" : ""}`}>+</span>
+                      <ChevronDown className={`size-4 shrink-0 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`} />
                     </button>
                     {open && <p className="text-sm text-muted-foreground pb-4 max-w-prose">{f.a}</p>}
                   </div>
@@ -164,6 +164,7 @@ function EventPage() {
                   </span>
                   <span className="text-xl font-bold text-accent-blue">{formatPrice(total)}</span>
                 </div>
+                <p className="text-xs text-muted-foreground -mt-2 mb-4">+ £1.00 booking fee</p>
                 <button
                   onClick={goCheckout}
                   disabled={totalQty === 0}

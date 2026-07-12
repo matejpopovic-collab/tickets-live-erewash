@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { ChevronLeft, ChevronRight, Lock, CreditCard, ShieldCheck, Check } from "lucide-react";
+import { ChevronLeft, ChevronRight, Lock, CreditCard, ShieldCheck, Check, Clock } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import {
   getEvent,
@@ -52,7 +52,7 @@ function CheckoutPage() {
     .filter((i: { qty: number }) => i.qty > 0);
 
   const subtotal = items.reduce((s: number, i: { ticket: TicketType; qty: number }) => s + i.qty * i.ticket.price, 0);
-  const fee = Math.round(subtotal * 0.06 * 100) / 100;
+  const fee = 1.0;
   const total = subtotal + fee;
   const totalQty = items.reduce((s: number, i: { qty: number }) => s + i.qty, 0);
 
@@ -155,6 +155,11 @@ function CheckoutPage() {
             Step <span className="font-semibold text-foreground">{step}</span> of 2
           </span>
         </div>
+
+        <p className="flex items-center gap-1.5 text-xs text-muted-foreground mb-6 -mt-4">
+          <Clock className="size-3.5 shrink-0" />
+          Your tickets are reserved for 10 minutes.
+        </p>
 
         <div className="grid md:grid-cols-[1fr_340px] gap-6">
           {/* Form card */}
