@@ -218,7 +218,7 @@ function ExpandableText({ text, className = "" }: { text: string; className?: st
     <div className={className}>
       <div className="relative">
         <p
-          className={`text-sm text-muted-foreground leading-relaxed ${expanded ? "" : "line-clamp-6"}`}
+          className={`text-sm text-muted-foreground leading-relaxed whitespace-pre-line ${expanded ? "" : "line-clamp-6"}`}
         >
           {text}
         </p>

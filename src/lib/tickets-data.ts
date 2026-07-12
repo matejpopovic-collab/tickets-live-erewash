@@ -60,7 +60,7 @@ export const events: Event[] = [
     name: "Blast from the Past - Bonfire and Firework Display",
     tagline: "An Evening of Spectacular Fireworks, Bonfires & Live Entertainment",
     description:
-      "Join us for our highly anticipated 'Blast from the Past' event, featuring a traditional bonfire and a thrilling fireworks display. Gates open at 5pm, the bonfire is lit from 6.30pm, and fireworks light up the sky from 7.30pm. Bring the whole family down to West Park for food stalls, live entertainment and one of the biggest bonfire nights in the area.",
+      "Join us for our highly anticipated 'Blast from the Past' event, featuring a traditional bonfire and a thrilling fireworks display. Gates open at 5pm, the bonfire is lit from 6.30pm, and fireworks light up the sky from 7.30pm.\n\nBring the whole family down to West Park for delicious food stalls, live entertainment and one of the biggest bonfire nights in the area. Soak up the festive atmosphere, enjoy a variety of tasty treats and warm drinks, and make memories with friends and loved ones as we celebrate this much-loved community tradition.\n\nWhether you're coming for the spectacular fireworks, the crackling bonfire or simply to enjoy a fantastic evening out, there's something for everyone at this unforgettable autumn event. Wrap up warm and join us for a night of fun, laughter and community spirit at West Park.",
     venue: "West Park",
     address: "West Park, Long Eaton",
     image: erewashCrest,
