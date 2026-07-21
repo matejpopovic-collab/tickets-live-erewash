@@ -126,8 +126,6 @@ function EventPage() {
                 <li>Please do not bring your own fireworks.</li>
                 <li>Sparklers are not permitted.</li>
                 <li>If car parks are full, please see attached map for alternative parking.</li>
-                <li>Fees will apply before 6pm and will only be a short distance from the event.</li>
-                <li>Fun fair and catering on site.</li>
               </ul>
             </div>
 
