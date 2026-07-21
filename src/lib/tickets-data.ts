@@ -78,7 +78,7 @@ export const events: Event[] = [
     faq: [
       { q: "What time do doors open?", a: "Gates open at 5pm. The bonfire is lit from 6.30pm and fireworks begin at 7.30pm." },
       { q: "Are tickets refundable?", a: "Refunds are available up to 7 days before the event. Booking fees are non-refundable." },
-      { q: "Is the venue accessible?", a: "Yes. Step-free access, accessible toilets and BSL interpretation are available — contact us in advance." },
+      { q: "Is the venue accessible?", a: "Yes. Step-free access, accessible toilets and BSL interpretation are available - contact us in advance. Disabled access - with viewing area and free car parking spaces at West Park Leisure Centre's Car Park. Please have your blue badge to gain access; please note there are a limited number of spaces." },
     ],
     terms: "Online discounted tickets are available until 12 noon on the day of the event, after which all tickets are full price. Tickets are personal to the buyer and may not be resold above face value.",
   },
