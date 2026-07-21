@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { ChevronRight, ChevronDown } from "lucide-react";
+import { ChevronRight, ChevronDown, AlertTriangle } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import {
@@ -114,6 +114,21 @@ function EventPage() {
               <div className="w-full aspect-[2/1] bg-surface border border-border rounded-xl overflow-hidden">
                 <img src={mapImg} alt={`Map of ${event.venue}`} loading="lazy" className="w-full h-full object-cover" />
               </div>
+            </div>
+
+            {/* Important information */}
+            <div className="mb-8 bg-warning/10 border border-warning/30 rounded-xl p-5">
+              <h2 className="font-semibold text-base mb-3 flex items-center gap-2">
+                <AlertTriangle className="size-4 text-warning shrink-0" />
+                Important information
+              </h2>
+              <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
+                <li>Please do not bring your own fireworks.</li>
+                <li>Sparklers are not permitted.</li>
+                <li>If car parks are full, please see attached map for alternative parking.</li>
+                <li>Fees will apply before 6pm and will only be a short distance from the event.</li>
+                <li>Fun fair and catering on site.</li>
+              </ul>
             </div>
 
             {/* Mobile ticket section */}
