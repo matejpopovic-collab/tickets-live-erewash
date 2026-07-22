@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { ChevronRight, ChevronDown, AlertTriangle } from "lucide-react";
+import { ChevronRight, ChevronDown, AlertTriangle, CalendarDays, MapPin } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import {
@@ -35,7 +35,9 @@ export const Route = createFileRoute("/events/$eventId")({
     <div className="min-h-screen grid place-items-center">
       <div className="text-center">
         <h1 className="text-2xl font-bold">Event not found</h1>
-        <Link to="/" className="text-accent-blue mt-2 inline-block">Back to home</Link>
+        <Link to="/" className="text-accent-blue mt-2 inline-block">
+          Back to home
+        </Link>
       </div>
     </div>
   ),
@@ -50,13 +52,11 @@ function EventPage() {
 
   const fixture = event.fixtures.find((f: Fixture) => f.id === fixtureId)!;
   const total = useMemo(
-    () => event.ticketTypes.reduce((sum: number, t: TicketType) => sum + (qty[t.id] || 0) * t.price, 0),
-    [qty, event.ticketTypes]
+    () =>
+      event.ticketTypes.reduce((sum: number, t: TicketType) => sum + (qty[t.id] || 0) * t.price, 0),
+    [qty, event.ticketTypes],
   );
-  const totalQty = useMemo(
-    () => Object.values(qty).reduce((a, b) => a + b, 0),
-    [qty]
-  );
+  const totalQty = useMemo(() => Object.values(qty).reduce((a, b) => a + b, 0), [qty]);
 
   const setTicketQty = (id: string, n: number) => {
     setQty((prev) => ({ ...prev, [id]: Math.max(0, Math.min(8, n)) }));
@@ -75,28 +75,42 @@ function EventPage() {
     <div className="min-h-screen bg-white pb-28 md:pb-0">
       <SiteHeader containerClassName="max-w-5xl px-4" cartCount={totalQty} />
 
-      {/* Hero */}
-      <section className="px-4 max-w-5xl mx-auto pt-8">
-        <div className="overflow-hidden rounded-2xl aspect-[16/8] bg-surface">
-          <img
-            src={event.heroImage ?? event.image}
-            alt={event.name}
-            width={1600}
-            height={800}
-            className="w-full h-full object-cover"
-          />
+      {/* Hero (full-bleed) */}
+      <section className="relative w-full h-[420px] sm:h-[480px] md:h-[560px] overflow-hidden">
+        <img
+          src={event.heroImage ?? event.image}
+          alt={event.name}
+          width={1600}
+          height={800}
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/20" />
+        <div className="relative z-10 h-full max-w-5xl mx-auto px-4 flex flex-col justify-end pb-9 md:pb-14">
+          <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs sm:text-sm font-medium uppercase tracking-wider text-white/85 mb-4">
+            <CalendarDays className="size-4 shrink-0" />
+            {formatDate(fixture.date)} · Gates {fixture.doorsTime}
+            <MapPin className="size-4 shrink-0 ml-1" />
+            {event.venue}
+          </p>
+          <h1>
+            <span className="event-hero-title block">{event.name.split(" - ")[0]}</span>
+            {event.name.includes(" - ") && (
+              <span className="block mt-1.5 text-lg sm:text-2xl font-bold tracking-tight text-white">
+                {event.name.split(" - ").slice(1).join(" - ")}
+              </span>
+            )}
+          </h1>
+          <p className="mt-3 max-w-xl text-sm sm:text-base leading-relaxed text-white/80">
+            {event.tagline}
+          </p>
         </div>
+      </section>
 
-        <div className="grid md:grid-cols-[1fr_360px] gap-10 mt-8">
+      {/* Content */}
+      <section className="px-4 max-w-5xl mx-auto pt-8 md:pt-10">
+        <div className="grid md:grid-cols-[1fr_360px] gap-10">
           {/* Left: info */}
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2">
-              {event.name.split(" - ").map((line, i) => (
-                <span key={i} className="block">{line}</span>
-              ))}
-            </h1>
-            <p className="text-muted-foreground text-base leading-relaxed mb-6 max-w-xl">{event.tagline}</p>
-
             <h2 className="font-semibold text-base mb-3">Overview</h2>
             <ExpandableText text={event.description} className="mb-8 max-w-xl" />
 
@@ -110,9 +124,16 @@ function EventPage() {
             {/* Location map */}
             <div className="mb-8">
               <h2 className="font-semibold text-base mb-1">Location</h2>
-              <p className="text-sm text-muted-foreground mb-4">{event.venue}, {event.address}</p>
+              <p className="text-sm text-muted-foreground mb-4">
+                {event.venue}, {event.address}
+              </p>
               <div className="w-full aspect-[2/1] bg-surface border border-border rounded-xl overflow-hidden">
-                <img src={mapImg} alt={`Map of ${event.venue}`} loading="lazy" className="w-full h-full object-cover" />
+                <img
+                  src={mapImg}
+                  alt={`Map of ${event.venue}`}
+                  loading="lazy"
+                  className="w-full h-full object-cover"
+                />
               </div>
             </div>
 
@@ -132,7 +153,12 @@ function EventPage() {
             {/* Mobile ticket section */}
             <div className="md:hidden mb-10">
               <h2 className="font-semibold text-base mb-4">Tickets</h2>
-              <TicketList tickets={event.ticketTypes} qty={qty} setQty={setTicketQty} fixtureStatus={fixture.status} />
+              <TicketList
+                tickets={event.ticketTypes}
+                qty={qty}
+                setQty={setTicketQty}
+                fixtureStatus={fixture.status}
+              />
             </div>
 
             {/* FAQ */}
@@ -147,9 +173,13 @@ function EventPage() {
                       className="w-full flex items-center justify-between py-4 text-left cursor-pointer"
                     >
                       <span className="font-medium text-sm">{f.q}</span>
-                      <ChevronDown className={`size-4 shrink-0 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`} />
+                      <ChevronDown
+                        className={`size-4 shrink-0 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`}
+                      />
                     </button>
-                    {open && <p className="text-sm text-muted-foreground pb-4 max-w-prose">{f.a}</p>}
+                    {open && (
+                      <p className="text-sm text-muted-foreground pb-4 max-w-prose">{f.a}</p>
+                    )}
                   </div>
                 );
               })}
@@ -169,11 +199,17 @@ function EventPage() {
               <p className="text-xs text-muted-foreground mb-5">
                 {formatDate(fixture.date)} · {fixture.doorsTime}
               </p>
-              <TicketList tickets={event.ticketTypes} qty={qty} setQty={setTicketQty} fixtureStatus={fixture.status} />
+              <TicketList
+                tickets={event.ticketTypes}
+                qty={qty}
+                setQty={setTicketQty}
+                fixtureStatus={fixture.status}
+              />
               <div className="pt-5 mt-5 border-t border-border">
                 <div className="flex justify-between mb-4 text-sm">
                   <span className="text-muted-foreground">
-                    Subtotal {totalQty > 0 && `(${totalQty} ${totalQty === 1 ? "ticket" : "tickets"})`}
+                    Subtotal{" "}
+                    {totalQty > 0 && `(${totalQty} ${totalQty === 1 ? "ticket" : "tickets"})`}
                   </span>
                   <span className="text-xl font-bold text-accent-blue">{formatPrice(total)}</span>
                 </div>
@@ -206,7 +242,13 @@ function EventPage() {
             </p>
             <p className="text-xl font-bold text-accent-blue">
               {totalQty === 0
-                ? formatPrice(Math.min(...event.ticketTypes.filter((t: TicketType) => t.available && t.price > 0).map((t: TicketType) => t.price)))
+                ? formatPrice(
+                    Math.min(
+                      ...event.ticketTypes
+                        .filter((t: TicketType) => t.available && t.price > 0)
+                        .map((t: TicketType) => t.price),
+                    ),
+                  )
                 : formatPrice(total)}
             </p>
           </div>
@@ -252,13 +294,21 @@ function ExpandableText({ text, className = "" }: { text: string; className?: st
 function Fact({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between gap-4 py-3 sm:block sm:py-0">
-      <p className="text-[10px] uppercase font-medium text-muted-foreground tracking-wider sm:mb-1">{label}</p>
+      <p className="text-[10px] uppercase font-medium text-muted-foreground tracking-wider sm:mb-1">
+        {label}
+      </p>
       <p className="text-base font-semibold text-right sm:text-left">{value}</p>
     </div>
   );
 }
 
-function AvailabilityBadge({ status, available }: { status: Fixture["status"]; available: boolean }) {
+function AvailabilityBadge({
+  status,
+  available,
+}: {
+  status: Fixture["status"];
+  available: boolean;
+}) {
   if (!available) return null;
   if (status === "selling-fast") {
     return (
@@ -297,7 +347,9 @@ function TicketList({
             <div className={t.available ? "" : "opacity-50"}>
               <div className="flex items-center gap-2 flex-wrap">
                 <p className="font-semibold text-sm">{t.name}</p>
-                {t.id === "adult" && <AvailabilityBadge status={fixtureStatus} available={t.available} />}
+                {t.id === "adult" && (
+                  <AvailabilityBadge status={fixtureStatus} available={t.available} />
+                )}
               </div>
               {t.description && (
                 <p className="text-xs text-muted-foreground mt-0.5">{t.description}</p>
@@ -311,13 +363,17 @@ function TicketList({
                   disabled={n === 0}
                   className="size-8 border border-border rounded-full flex items-center justify-center text-lg disabled:opacity-30 hover:border-accent-blue transition-colors cursor-pointer"
                   aria-label={`Remove ${t.name}`}
-                >−</button>
+                >
+                  −
+                </button>
                 <span className="w-5 text-center font-bold tabular-nums text-sm">{n}</span>
                 <button
                   onClick={() => setQty(t.id, n + 1)}
                   className="size-8 border border-border rounded-full flex items-center justify-center text-lg hover:border-accent-blue transition-colors cursor-pointer"
                   aria-label={`Add ${t.name}`}
-                >+</button>
+                >
+                  +
+                </button>
               </div>
             ) : (
               <span className="text-xs font-bold uppercase text-danger shrink-0">Sold out</span>
