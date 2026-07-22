@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
-import { ChevronLeft, ChevronRight, Lock, CreditCard, ShieldCheck, Check, Clock } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ChevronLeft, ChevronRight, Lock, CreditCard, ShieldCheck, Check, Clock, MapPin, CalendarDays, Flame } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import {
   getEvent,
@@ -44,6 +44,15 @@ function CheckoutPage() {
   const [confirmEmail, setConfirmEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [orderRef] = useState(() => `TL-${Math.floor(100000 + Math.random() * 900000)}`);
+
+  const [secondsLeft, setSecondsLeft] = useState(10 * 60);
+  useEffect(() => {
+    if (done) return;
+    const id = setInterval(() => setSecondsLeft((s) => (s > 0 ? s - 1 : 0)), 1000);
+    return () => clearInterval(id);
+  }, [done]);
+  const mmss = `${String(Math.floor(secondsLeft / 60)).padStart(2, "0")}:${String(secondsLeft % 60).padStart(2, "0")}`;
+  const timeLow = secondsLeft <= 120;
 
   const fixture = event.fixtures.find((f: { id: string }) => f.id === search.fixture) ?? event.fixtures[0];
 
@@ -150,7 +159,7 @@ function CheckoutPage() {
           <div>
             <Link
               to="/"
-              className="inline-flex bg-accent-blue text-white font-semibold px-8 py-3.5 rounded-xl hover:opacity-90 transition"
+              className="inline-flex bg-accent-blue text-white font-semibold px-8 py-3.5 rounded-xl shadow-lg shadow-accent-blue/25 hover:shadow-xl hover:shadow-accent-blue/30 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
             >
               Browse more events
             </Link>
@@ -181,21 +190,30 @@ function CheckoutPage() {
         {/* Step indicator */}
         <div className="flex items-center mb-8">
           <StepIndicator step={1} label="Your details" active={step === 1} completed={step > 1} />
-          <div className="w-8 sm:w-12 h-px bg-border mx-2 sm:mx-3" />
+          <div className={`w-8 sm:w-12 h-0.5 rounded-full mx-2 sm:mx-3 transition-colors ${step > 1 ? "bg-success" : "bg-border"}`} />
           <StepIndicator step={2} label="Payment" active={step === 2} completed={false} />
           <span className="ml-auto pl-4 text-sm text-muted-foreground whitespace-nowrap hidden sm:block">
             Step <span className="font-semibold text-foreground">{step}</span> of 2
           </span>
         </div>
 
-        <p className="flex items-center gap-1.5 text-xs text-muted-foreground mb-6 -mt-4">
-          <Clock className="size-3.5 shrink-0" />
-          Your tickets are reserved for 10 minutes.
-        </p>
+        <div className="-mt-3 mb-6">
+          <span
+            className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+              timeLow
+                ? "border-orange-200 bg-orange-50 text-orange-700"
+                : "border-border bg-white text-muted-foreground"
+            }`}
+          >
+            <Clock className={`size-3.5 shrink-0 ${timeLow ? "animate-pulse" : ""}`} />
+            Tickets reserved
+            <span className="tabular-nums font-semibold text-foreground">{mmss}</span>
+          </span>
+        </div>
 
         <div className="grid md:grid-cols-[1fr_340px] gap-6">
           {/* Form card */}
-          <div className="bg-white border border-border rounded-2xl p-6 md:p-8">
+          <div className="bg-white border border-border rounded-2xl p-6 md:p-8 shadow-[0_1px_2px_rgba(16,24,40,0.04),0_16px_40px_-16px_rgba(16,24,40,0.14)]">
             {step === 1 ? (
               <>
                 <p className="text-sm font-semibold text-center mb-4">Express checkout</p>
@@ -293,10 +311,10 @@ function CheckoutPage() {
                   {emailError && <p className="text-sm text-destructive">{emailError}</p>}
                   <button
                     type="submit"
-                    className="w-full bg-accent-blue text-white font-semibold py-3.5 rounded-xl mt-2 flex items-center justify-center gap-2 hover:opacity-90 transition disabled:opacity-40"
+                    className="group w-full bg-accent-blue text-white font-semibold py-3.5 rounded-xl mt-2 flex items-center justify-center gap-2 shadow-lg shadow-accent-blue/25 hover:shadow-xl hover:shadow-accent-blue/30 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 disabled:opacity-40"
                   >
                     Continue to payment
-                    <ChevronRight className="size-4" />
+                    <ChevronRight className="size-4 transition-transform group-hover:translate-x-0.5" />
                   </button>
                 </form>
               </>
@@ -337,10 +355,10 @@ function CheckoutPage() {
                   </div>
                   <button
                     type="submit"
-                    className="w-full bg-accent-blue text-white font-semibold py-3.5 rounded-xl mt-1 flex items-center justify-center gap-2 hover:opacity-90 transition"
+                    className="w-full bg-accent-blue text-white font-semibold py-3.5 rounded-xl mt-1 flex items-center justify-center gap-2 shadow-lg shadow-accent-blue/25 hover:shadow-xl hover:shadow-accent-blue/30 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
                   >
                     <Lock className="size-4" />
-                    Pay {formatPrice(total)}
+                    Pay <span className="tabular-nums">{formatPrice(total)}</span>
                   </button>
                   <button
                     type="button"
@@ -357,31 +375,58 @@ function CheckoutPage() {
 
           {/* Order summary */}
           <aside>
-            <div className="md:sticky md:top-20 bg-white border border-border rounded-2xl overflow-hidden">
-              {/* Event header */}
-              <div className="bg-surface px-5 py-4 border-b border-border">
-                <p className="font-bold text-sm leading-tight">{event.name}</p>
-                <p className="text-xs text-muted-foreground mt-1">{event.venue}</p>
-                <p className="text-xs text-muted-foreground">{formatDate(fixture.date)} · {fixture.doorsTime}</p>
+            <div className="md:sticky md:top-24 bg-white border border-border rounded-2xl overflow-hidden shadow-[0_1px_2px_rgba(16,24,40,0.04),0_16px_40px_-16px_rgba(16,24,40,0.14)]">
+              {/* Event image header */}
+              <div className="relative h-32">
+                <img
+                  src={event.heroImage ?? event.image}
+                  alt=""
+                  className="absolute inset-0 size-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/10" />
+                {fixture.status === "selling-fast" && (
+                  <span className="absolute top-3 left-3 inline-flex items-center gap-1 rounded-full bg-orange-500 px-2.5 py-1 text-[11px] font-semibold text-white shadow-sm">
+                    <Flame className="size-3" />
+                    Selling fast
+                  </span>
+                )}
+                <p className="absolute inset-x-0 bottom-0 p-4 font-bold text-sm leading-tight text-white line-clamp-2">
+                  {event.name}
+                </p>
+              </div>
+
+              {/* Event meta */}
+              <div className="px-5 py-4 border-b border-border space-y-2">
+                <p className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <CalendarDays className="size-3.5 shrink-0 text-foreground/50" />
+                  {formatDate(fixture.date)} · Gates {fixture.doorsTime}
+                </p>
+                <p className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <MapPin className="size-3.5 shrink-0 text-foreground/50" />
+                  {event.venue}
+                </p>
               </div>
 
               <div className="p-5">
                 <div className="space-y-3 mb-5 pb-5 border-b border-border">
                   {items.map((i: { ticket: TicketType; qty: number }) => (
-                    <div key={i.ticket.id} className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">
-                        {i.qty} × {i.ticket.name}
+                    <div key={i.ticket.id} className="flex items-center justify-between gap-3 text-sm">
+                      <span className="flex items-center gap-2 text-foreground">
+                        <span className="inline-flex items-center justify-center min-w-6 h-6 px-1.5 rounded-md bg-surface border border-border text-xs font-semibold tabular-nums">
+                          {i.qty}
+                        </span>
+                        {i.ticket.name}
                       </span>
-                      <span className="font-medium">{formatPrice(i.qty * i.ticket.price)}</span>
+                      <span className="font-medium tabular-nums">{formatPrice(i.qty * i.ticket.price)}</span>
                     </div>
                   ))}
                 </div>
                 <div className="space-y-2 text-sm">
                   <Row label="Subtotal" value={formatPrice(subtotal)} />
                   <Row label="Booking fee" value={formatPrice(fee)} muted />
-                  <div className="pt-3 mt-2 border-t border-border flex justify-between font-bold">
+                  <div className="pt-3 mt-2 border-t border-border flex items-baseline justify-between font-bold">
                     <span>Total</span>
-                    <span>{formatPrice(total)}</span>
+                    <span className="text-lg tabular-nums">{formatPrice(total)}</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-1.5 mt-4 text-xs text-success font-medium">
@@ -470,7 +515,7 @@ function Row({ label, value, muted }: { label: string; value: string; muted?: bo
   return (
     <div className={`flex justify-between ${muted ? "text-muted-foreground" : ""}`}>
       <span>{label}</span>
-      <span className="font-medium">{value}</span>
+      <span className="font-medium tabular-nums">{value}</span>
     </div>
   );
 }
