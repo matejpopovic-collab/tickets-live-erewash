@@ -10,7 +10,6 @@ import {
   Clock,
   MapPin,
   CalendarDays,
-  Flame,
 } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { getEvent, formatDate, formatPrice, type TicketType } from "@/lib/tickets-data";
@@ -470,12 +469,6 @@ function CheckoutPage() {
                   className="absolute inset-0 size-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/10" />
-                {fixture.status === "selling-fast" && (
-                  <span className="absolute top-3 left-3 inline-flex items-center gap-1 rounded-full bg-orange-500 px-2.5 py-1 text-[11px] font-semibold text-white shadow-sm">
-                    <Flame className="size-3" />
-                    Selling fast
-                  </span>
-                )}
                 <p className="absolute inset-x-0 bottom-0 p-4 font-bold text-sm leading-tight text-white line-clamp-2">
                   {event.name}
                 </p>
