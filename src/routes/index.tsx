@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { ShieldCheck, BadgeCheck, Zap } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { events, organisations, formatDate, formatPrice, type Event, type Fixture } from "@/lib/tickets-data";
@@ -115,7 +116,40 @@ function Index() {
         </div>
       </section>
 
+      {/* Trust badges */}
+      <section className="border-t border-border">
+        <div className="max-w-5xl mx-auto px-4 py-14">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 sm:gap-8 text-center">
+            <TrustBadge
+              icon={<ShieldCheck className="size-8 text-accent-blue" strokeWidth={1.75} />}
+              title="Secure Payments"
+              text="Your payment information is encrypted and protected"
+            />
+            <TrustBadge
+              icon={<BadgeCheck className="size-8 text-accent-blue" strokeWidth={1.75} />}
+              title="Verified Organisers"
+              text="All events are from official verified sources"
+            />
+            <TrustBadge
+              icon={<Zap className="size-8 text-accent-blue" strokeWidth={1.75} />}
+              title="Instant Delivery"
+              text="Receive your tickets immediately via email"
+            />
+          </div>
+        </div>
+      </section>
+
       <SiteFooter containerClassName="max-w-5xl px-4" />
+    </div>
+  );
+}
+
+function TrustBadge({ icon, title, text }: { icon: React.ReactNode; title: string; text: string }) {
+  return (
+    <div className="flex flex-col items-center">
+      <div className="mb-4">{icon}</div>
+      <h3 className="font-bold text-base mb-1.5">{title}</h3>
+      <p className="text-sm text-muted-foreground max-w-[220px]">{text}</p>
     </div>
   );
 }
