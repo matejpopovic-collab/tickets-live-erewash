@@ -61,7 +61,7 @@ function Index() {
       </header>
 
       {/* Events list */}
-      <section className="px-4 max-w-5xl mx-auto py-10">
+      <section className="px-4 max-w-5xl mx-auto pt-10 pb-20">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold">
             {activeOrg ? `${activeOrg.name} events` : "Upcoming events"}
