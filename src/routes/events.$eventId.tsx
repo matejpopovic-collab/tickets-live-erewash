@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { ChevronRight, ChevronDown, AlertTriangle, CalendarDays, MapPin } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { TrustBadges } from "@/components/trust-badges";
 import {
   getEvent,
   formatDate,
@@ -230,6 +231,8 @@ function EventPage() {
           </aside>
         </div>
       </section>
+
+      <TrustBadges className="mt-4" />
 
       <SiteFooter containerClassName="max-w-5xl px-4" />
 
