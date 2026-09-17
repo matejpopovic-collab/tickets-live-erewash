@@ -147,13 +147,18 @@ function EventPage() {
               <ul className="text-sm text-muted-foreground space-y-2 list-disc pl-5">
                 <li>Please do not bring your own fireworks.</li>
                 <li>Sparklers are not permitted.</li>
+                <li>Gates open 5pm · bonfire lit 6.30pm · fireworks 7.30pm (30 minutes).</li>
+                <li>Buy online by 4 November for the discounted price.</li>
                 <li>If car parks are full, please see attached map for alternative parking.</li>
               </ul>
             </div>
 
             {/* Mobile ticket section */}
             <div className="md:hidden mb-10">
-              <h2 className="font-semibold text-base mb-4">Tickets</h2>
+              <h2 className="font-semibold text-base mb-1">Tickets</h2>
+              <p className="text-xs text-muted-foreground mb-4">
+                Discounted online prices until 4 Nov · full price from 5 Nov
+              </p>
               <TicketList
                 tickets={event.ticketTypes}
                 qty={qty}
@@ -197,8 +202,11 @@ function EventPage() {
           <aside className="hidden md:block">
             <div className="sticky top-20 bg-white border border-border rounded-2xl shadow-lg p-6">
               <h3 className="font-bold text-lg mb-0.5">Select tickets</h3>
+              <p className="text-xs text-muted-foreground mb-1">
+                {formatDate(fixture.date)} · Gates {fixture.doorsTime}
+              </p>
               <p className="text-xs text-muted-foreground mb-5">
-                {formatDate(fixture.date)} · {fixture.doorsTime}
+                Discounted online prices until 4 Nov · full price from 5 Nov
               </p>
               <TicketList
                 tickets={event.ticketTypes}
@@ -241,7 +249,7 @@ function EventPage() {
         <div className="flex items-center justify-between gap-3">
           <div>
             <p className="text-[10px] uppercase font-medium text-muted-foreground tracking-wider">
-              {totalQty === 0 ? "From" : "Subtotal"}
+              {totalQty === 0 ? "From (online)" : "Subtotal"}
             </p>
             <p className="text-xl font-bold text-accent-blue">
               {totalQty === 0
@@ -357,7 +365,14 @@ function TicketList({
               {t.description && (
                 <p className="text-xs text-muted-foreground mt-0.5">{t.description}</p>
               )}
-              <p className="text-base font-bold text-accent-blue mt-1">{formatPrice(t.price)}</p>
+              <p className="text-base font-bold text-accent-blue mt-1">
+                {t.price === 0 ? "Free" : formatPrice(t.price)}
+                {t.gatePrice !== undefined && t.gatePrice > t.price && (
+                  <span className="ml-2 text-xs font-medium text-muted-foreground">
+                    {formatPrice(t.gatePrice)} on the night
+                  </span>
+                )}
+              </p>
             </div>
             {t.available ? (
               <div className="flex items-center gap-2 shrink-0">
