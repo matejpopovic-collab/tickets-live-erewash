@@ -39,16 +39,16 @@ function Index() {
         <div className="absolute inset-0 bg-black/60" />
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
           <h1 className="hero-title-fx leading-tight md:whitespace-nowrap">
-            {activeOrg ? `${activeOrg.name} Events` : "Blast from the Past"}
+            {activeOrg ? `${activeOrg.name} Events` : "Sparks in the Park"}
           </h1>
           <p className="mt-4 text-white text-[24px]">
             {activeOrg ? (
               activeOrg.short
             ) : (
               <>
-                An Evening of Spectacular Fireworks,
+                Bonfire and Firework Display
                 <br />
-                Bonfires &amp; Live Entertainment
+                Thu 5 Nov &middot; West Park, Long Eaton
               </>
             )}
           </p>
@@ -100,7 +100,7 @@ function Index() {
                     <div className="flex items-center justify-between">
                       {minPrice !== null && (
                         <div>
-                          <p className="text-xs text-muted-foreground">From</p>
+                          <p className="text-xs text-muted-foreground">From (online)</p>
                           <p className="font-bold text-accent-blue">{formatPrice(minPrice)}</p>
                         </div>
                       )}
