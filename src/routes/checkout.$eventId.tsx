@@ -12,7 +12,7 @@ import {
   CalendarDays,
 } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
-import { getEvent, formatDate, formatPrice, type TicketType } from "@/lib/tickets-data";
+import { getEvent, formatDate, formatPrice, bookingFee, type TicketType } from "@/lib/tickets-data";
 
 type Search = Record<string, string | number | undefined> & { fixture?: string };
 
@@ -73,9 +73,19 @@ function CheckoutPage() {
     (s: number, i: { ticket: TicketType; qty: number }) => s + i.qty * i.ticket.price,
     0,
   );
-  const fee = 1.0;
+  const fee = bookingFee(event.ticketTypes, search);
   const total = subtotal + fee;
   const totalQty = items.reduce((s: number, i: { qty: number }) => s + i.qty, 0);
+  const carQty = items
+    .filter((i: { ticket: TicketType }) => i.ticket.category === "vehicle")
+    .reduce((s: number, i: { qty: number }) => s + i.qty, 0);
+  const ticketQty = totalQty - carQty;
+  const qtyLabel = [
+    ticketQty > 0 && `${ticketQty} ${ticketQty === 1 ? "ticket" : "tickets"}`,
+    carQty > 0 && `${carQty} parking`,
+  ]
+    .filter(Boolean)
+    .join(" + ");
 
   if (items.length === 0 && !done) {
     return (
@@ -155,7 +165,7 @@ function CheckoutPage() {
               </div>
               <div className="flex items-center justify-between gap-3 border-t border-border bg-white px-3 py-2.5 text-sm">
                 <span className="text-muted-foreground">
-                  {totalQty} {totalQty === 1 ? "ticket" : "tickets"} · {orderRef}
+                  {qtyLabel} · {orderRef}
                 </span>
                 <span className="font-bold tabular-nums">{formatPrice(total)}</span>
               </div>
@@ -500,14 +510,20 @@ function CheckoutPage() {
                         {i.ticket.name}
                       </span>
                       <span className="font-medium tabular-nums">
-                        {formatPrice(i.qty * i.ticket.price)}
+                        {i.ticket.price === 0 ? "Free" : formatPrice(i.qty * i.ticket.price)}
                       </span>
                     </div>
                   ))}
+                  {items.some((i: { ticket: TicketType }) => i.ticket.blueBadge) && (
+                    <p className="text-xs leading-relaxed text-[#1d4ed8] bg-[#1d4ed8]/5 border border-[#1d4ed8]/15 rounded-lg px-3 py-2">
+                      Blue badge parking: please have your blue badge with you on arrival and park
+                      as directed by staff.
+                    </p>
+                  )}
                 </div>
                 <div className="space-y-2 text-sm">
                   <Row label="Subtotal" value={formatPrice(subtotal)} />
-                  <Row label="Booking fee" value={formatPrice(fee)} muted />
+                  <Row label="Booking fee" value={fee === 0 ? "Free" : formatPrice(fee)} muted />
                   <div className="pt-3 mt-2 border-t border-border flex items-baseline justify-between font-bold">
                     <span>Total</span>
                     <span className="text-lg tabular-nums">{formatPrice(total)}</span>

@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { ChevronRight, ChevronDown, AlertTriangle, CalendarDays, MapPin } from "lucide-react";
+import { ChevronRight, ChevronDown, AlertTriangle, CalendarDays, MapPin, Car, Check, Accessibility } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { TrustBadges } from "@/components/trust-badges";
@@ -8,6 +8,8 @@ import {
   getEvent,
   formatDate,
   formatPrice,
+  bookingFee,
+  BOOKING_FEE_PER_TICKET,
   type TicketType,
   type Fixture,
 } from "@/lib/tickets-data";
@@ -58,9 +60,23 @@ function EventPage() {
     [qty, event.ticketTypes],
   );
   const totalQty = useMemo(() => Object.values(qty).reduce((a, b) => a + b, 0), [qty]);
+  const fee = bookingFee(event.ticketTypes, qty);
+
+  const entryTickets = event.ticketTypes.filter((t: TicketType) => t.category !== "vehicle");
+  const carParks = event.ticketTypes.filter((t: TicketType) => t.category === "vehicle");
+  const carQty = carParks.reduce((a: number, t: TicketType) => a + (qty[t.id] || 0), 0);
+  const ticketQty = totalQty - carQty;
+  const qtyLabel = [
+    ticketQty > 0 && `${ticketQty} ${ticketQty === 1 ? "ticket" : "tickets"}`,
+    carQty > 0 && `${carQty} ${carQty === 1 ? "car" : "cars"}`,
+  ]
+    .filter(Boolean)
+    .join(" + ");
 
   const setTicketQty = (id: string, n: number) => {
-    setQty((prev) => ({ ...prev, [id]: Math.max(0, Math.min(8, n)) }));
+    const t = event.ticketTypes.find((x: TicketType) => x.id === id);
+    const max = Math.min(8, t?.capacity ?? 8);
+    setQty((prev) => ({ ...prev, [id]: Math.max(0, Math.min(max, n)) }));
   };
 
   const goCheckout = () => {
@@ -138,6 +154,11 @@ function EventPage() {
               </div>
             </div>
 
+            {/* Parking */}
+            {carParks.length > 0 && (
+              <ParkingSection carParks={carParks} qty={qty} setQty={setTicketQty} />
+            )}
+
             {/* Important information */}
             <div className="mb-8 bg-warning/10 border border-warning/30 rounded-xl p-5">
               <h2 className="font-semibold text-base mb-3 flex items-center gap-2">
@@ -160,11 +181,16 @@ function EventPage() {
                 Discounted online prices until 4 Nov · full price from 5 Nov
               </p>
               <TicketList
-                tickets={event.ticketTypes}
+                tickets={entryTickets}
                 qty={qty}
                 setQty={setTicketQty}
                 fixtureStatus={fixture.status}
               />
+              {carParks.length > 0 && (
+                <div className="mt-6">
+                  <ParkingSummary carParks={carParks} qty={qty} />
+                </div>
+              )}
             </div>
 
             {/* FAQ */}
@@ -209,20 +235,28 @@ function EventPage() {
                 Discounted online prices until 4 Nov · full price from 5 Nov
               </p>
               <TicketList
-                tickets={event.ticketTypes}
+                tickets={entryTickets}
                 qty={qty}
                 setQty={setTicketQty}
                 fixtureStatus={fixture.status}
               />
+              {carParks.length > 0 && (
+                <div className="mt-5">
+                  <ParkingSummary carParks={carParks} qty={qty} />
+                </div>
+              )}
               <div className="pt-5 mt-5 border-t border-border">
                 <div className="flex justify-between mb-4 text-sm">
                   <span className="text-muted-foreground">
-                    Subtotal{" "}
-                    {totalQty > 0 && `(${totalQty} ${totalQty === 1 ? "ticket" : "tickets"})`}
+                    Subtotal {totalQty > 0 && `(${qtyLabel})`}
                   </span>
                   <span className="text-xl font-bold text-accent-blue">{formatPrice(total)}</span>
                 </div>
-                <p className="text-xs text-muted-foreground -mt-2 mb-4">+ £1.00 booking fee</p>
+                <p className="text-xs text-muted-foreground -mt-2 mb-4">
+                  {fee > 0
+                    ? `+ ${formatPrice(fee)} booking fee (${formatPrice(BOOKING_FEE_PER_TICKET)} per ticket)`
+                    : `+ ${formatPrice(BOOKING_FEE_PER_TICKET)} booking fee per ticket · none on free tickets or parking`}
+                </p>
                 <button
                   onClick={goCheckout}
                   disabled={totalQty === 0}
@@ -273,6 +307,229 @@ function EventPage() {
           </button>
         </div>
       </div>
+    </div>
+  );
+}
+
+function scrollToParking() {
+  document.getElementById("parking")?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function ParkingSection({
+  carParks,
+  qty,
+  setQty,
+}: {
+  carParks: TicketType[];
+  qty: Record<string, number>;
+  setQty: (id: string, n: number) => void;
+}) {
+  return (
+    <section id="parking" className="mb-8 scroll-mt-24">
+      <div className="mb-4">
+        <div>
+          <h2 className="font-semibold text-base mb-1 flex items-center gap-2">
+            <Car className="size-4 text-accent-blue" />
+            Pre-book parking
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Spaces are limited, so book your car in with your tickets.
+          </p>
+        </div>
+      </div>
+
+      <div className="grid sm:grid-cols-2 gap-3">
+        {carParks.filter((c) => !c.blueBadge).map((c, i) => {
+          const n = qty[c.id] || 0;
+          const max = Math.min(8, c.capacity ?? 8);
+          const selected = n > 0;
+          return (
+            <div
+              key={c.id}
+              className={`relative rounded-2xl border p-5 transition-all duration-200 ${
+                selected
+                  ? "border-accent-blue bg-accent-blue/5 shadow-[0_0_0_3px] shadow-accent-blue/10"
+                  : "border-border bg-white hover:border-accent-blue/40 hover:shadow-md"
+              }`}
+            >
+              <div className="flex items-start justify-between gap-3 mb-4 sm:mb-6">
+                <div className="flex items-center gap-3">
+                  <span
+                    className={`size-10 rounded-xl flex items-center justify-center text-base font-bold transition-colors ${
+                      selected ? "bg-accent-blue text-white" : "bg-surface border border-border text-foreground"
+                    }`}
+                  >
+                    {selected ? <Check className="size-5" /> : "P"}
+                  </span>
+                  <div>
+                    <p className="text-[10px] uppercase font-medium tracking-wider text-muted-foreground">
+                      {c.description ?? `Car park ${i + 1}`}
+                    </p>
+                    <p className="font-semibold text-sm leading-snug">{c.name}</p>
+                  </div>
+                </div>
+              </div>
+
+              {c.capacity !== undefined && (
+                <p className="mb-4 inline-flex items-center gap-1.5 rounded-full bg-warning/10 px-2.5 py-1 text-[11px] font-semibold text-warning">
+                  <span className="size-1.5 rounded-full bg-warning" />
+                  Only {c.capacity} spaces
+                </p>
+              )}
+
+              <div className="flex items-center justify-between gap-3 pt-4 border-t border-border">
+                <p className="text-sm">
+                  <span className="font-bold text-accent-blue">{formatPrice(c.price)}</span>
+                  <span className="text-muted-foreground"> per car</span>
+                </p>
+                {c.available ? (
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setQty(c.id, n - 1)}
+                      disabled={n === 0}
+                      className="size-8 border border-border bg-white rounded-full flex items-center justify-center text-lg disabled:opacity-30 hover:border-accent-blue transition-colors cursor-pointer"
+                      aria-label={`Remove a car from ${c.name}`}
+                    >
+                      −
+                    </button>
+                    <span className="w-5 text-center font-bold tabular-nums text-sm">{n}</span>
+                    <button
+                      onClick={() => setQty(c.id, n + 1)}
+                      disabled={n >= max}
+                      className="size-8 border border-border bg-white rounded-full flex items-center justify-center text-lg disabled:opacity-30 hover:border-accent-blue transition-colors cursor-pointer"
+                      aria-label={`Add a car to ${c.name}`}
+                    >
+                      +
+                    </button>
+                  </div>
+                ) : (
+                  <span className="text-xs font-bold uppercase text-danger">Full</span>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {carParks
+        .filter((c) => c.blueBadge)
+        .map((c) => {
+          const n = qty[c.id] || 0;
+          const max = Math.min(8, c.capacity ?? 8);
+          const selected = n > 0;
+          return (
+            <div
+              key={c.id}
+              className={`mt-3 rounded-2xl border p-4 sm:p-5 transition-all duration-200 ${
+                selected
+                  ? "border-[#1d4ed8] bg-[#1d4ed8]/5 shadow-[0_0_0_3px] shadow-[#1d4ed8]/10"
+                  : "border-[#1d4ed8]/20 bg-[#1d4ed8]/5 hover:border-[#1d4ed8]/40"
+              }`}
+            >
+              <div className="flex items-start gap-3">
+                <span className="size-10 shrink-0 rounded-xl bg-[#1d4ed8] text-white flex items-center justify-center">
+                  {selected ? <Check className="size-5" /> : <Accessibility className="size-5" />}
+                </span>
+                <div className="min-w-0">
+                  <p className="font-semibold text-sm flex flex-wrap items-center gap-2">
+                    {c.name}
+                    <span className="rounded-full bg-success/15 px-2 py-0.5 text-[11px] font-semibold text-success">
+                      Free
+                    </span>
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
+                    Free parking for disabled users only. Please have your blue badge upon arrival
+                    for access and park as directed by staff. Please note there are a limited
+                    number of parking spaces.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center justify-between gap-3 pt-4 mt-4 border-t border-[#1d4ed8]/15">
+                <p className="text-sm">
+                  <span className="font-bold text-success">Free</span>
+                  <span className="text-muted-foreground"> · blue badge required</span>
+                </p>
+                {c.available ? (
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setQty(c.id, n - 1)}
+                      disabled={n === 0}
+                      className="size-8 border border-border bg-white rounded-full flex items-center justify-center text-lg disabled:opacity-30 hover:border-[#1d4ed8] transition-colors cursor-pointer"
+                      aria-label={`Remove a car from ${c.name}`}
+                    >
+                      −
+                    </button>
+                    <span className="w-5 text-center font-bold tabular-nums text-sm">{n}</span>
+                    <button
+                      onClick={() => setQty(c.id, n + 1)}
+                      disabled={n >= max}
+                      className="size-8 border border-border bg-white rounded-full flex items-center justify-center text-lg disabled:opacity-30 hover:border-[#1d4ed8] transition-colors cursor-pointer"
+                      aria-label={`Add a car to ${c.name}`}
+                    >
+                      +
+                    </button>
+                  </div>
+                ) : (
+                  <span className="text-xs font-bold uppercase text-danger">Full</span>
+                )}
+              </div>
+            </div>
+          );
+        })}
+    </section>
+  );
+}
+
+function ParkingSummary({ carParks, qty }: { carParks: TicketType[]; qty: Record<string, number> }) {
+  const chosen = carParks.filter((c) => (qty[c.id] || 0) > 0);
+  const from = Math.min(...carParks.filter((c) => c.price > 0).map((c) => c.price));
+
+  if (chosen.length === 0) {
+    return (
+      <button
+        onClick={scrollToParking}
+        className="group w-full flex items-center gap-3 rounded-xl border border-dashed border-border px-3.5 py-3 text-left hover:border-accent-blue hover:bg-accent-blue/5 transition-colors cursor-pointer"
+      >
+        <span className="size-8 rounded-lg bg-surface border border-border flex items-center justify-center shrink-0 group-hover:border-accent-blue/40">
+          <Car className="size-4 text-accent-blue" />
+        </span>
+        <span className="flex-1 min-w-0">
+          <span className="block text-sm font-semibold">Add parking</span>
+          <span className="block text-xs text-muted-foreground">
+            {formatPrice(from)} per car · free blue badge parking
+          </span>
+        </span>
+        <ChevronDown className="size-4 text-muted-foreground group-hover:text-accent-blue" />
+      </button>
+    );
+  }
+
+  return (
+    <div className="rounded-xl bg-accent-blue/5 border border-accent-blue/20 px-3.5 py-3">
+      <div className="flex items-center justify-between mb-2">
+        <p className="text-sm font-semibold flex items-center gap-2">
+          <Car className="size-4 text-accent-blue" />
+          Parking
+        </p>
+        <button
+          onClick={scrollToParking}
+          className="text-xs font-semibold text-accent-blue hover:opacity-80 cursor-pointer"
+        >
+          Edit
+        </button>
+      </div>
+      <ul className="space-y-1">
+        {chosen.map((c) => (
+          <li key={c.id} className="flex justify-between gap-3 text-xs">
+            <span className="text-muted-foreground">
+              {qty[c.id]} × {c.name.replace(/ Car Park$/, "")}
+            </span>
+            <span className="font-semibold tabular-nums">
+              {c.price === 0 ? "Free" : formatPrice((qty[c.id] || 0) * c.price)}
+            </span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

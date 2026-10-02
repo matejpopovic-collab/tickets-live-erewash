@@ -9,6 +9,8 @@ export type TicketType = {
   gatePrice?: number; // price when bought on the night
   available: boolean;
   category?: "standard" | "vip" | "vehicle";
+  capacity?: number;  // total spaces available, if limited
+  blueBadge?: boolean; // free disabled-access parking (blue badge holders only)
 };
 
 export type Fixture = {
@@ -75,6 +77,9 @@ export const events: Event[] = [
       { id: "concession", name: "16 & Under / Over 60", price: 5, gatePrice: 7, available: true, category: "standard" },
       { id: "family", name: "Family", description: "2 adults & up to 3 children", price: 20, gatePrice: 25, available: true, category: "standard" },
       { id: "child", name: "Child (5 & under)", description: "Free entry", price: 0, gatePrice: 0, available: true, category: "standard" },
+      { id: "parking-leisure-centre", name: "West Park Leisure Centre Car Park", description: "Car park 1", price: 5, available: true, category: "vehicle", capacity: 150 },
+      { id: "parking-blue-badge", name: "Blue Badge Parking", description: "Disabled users only", price: 0, available: true, category: "vehicle", blueBadge: true },
+      { id: "parking-events-field", name: "Events Field Car Park", description: "Car park 2", price: 5, available: true, category: "vehicle", capacity: 166 },
     ],
     faq: [
       { q: "What time do gates open?", a: "Gates open at 5pm. The bonfire is lit from 6.30pm and the 30-minute fireworks display begins at 7.30pm." },
@@ -96,6 +101,11 @@ export const formatDate = (iso: string) =>
 
 export const formatDayMonth = (iso: string) =>
   new Date(iso).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
+
+// £1.00 booking fee per paid entry ticket. No fee on free tickets (e.g. Child 5 & under) or on parking.
+export const BOOKING_FEE_PER_TICKET = 1;
+export const bookingFee = (tickets: TicketType[], qty: Record<string, number | string | undefined>) =>
+  tickets.reduce((sum, t) => sum + (t.price > 0 && t.category !== "vehicle" ? Number(qty[t.id] || 0) * BOOKING_FEE_PER_TICKET : 0), 0);
 
 export const formatPrice = (n: number) =>
   new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP" }).format(n);
