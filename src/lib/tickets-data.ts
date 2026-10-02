@@ -102,10 +102,10 @@ export const formatDate = (iso: string) =>
 export const formatDayMonth = (iso: string) =>
   new Date(iso).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
 
-// £1.00 booking fee per paid entry ticket. No fee on free tickets (e.g. Child 5 & under) or on parking.
+// £1.00 booking fee per paid ticket, including paid parking. No fee on free tickets (e.g. Child 5 & under).
 export const BOOKING_FEE_PER_TICKET = 1;
 export const bookingFee = (tickets: TicketType[], qty: Record<string, number | string | undefined>) =>
-  tickets.reduce((sum, t) => sum + (t.price > 0 && t.category !== "vehicle" ? Number(qty[t.id] || 0) * BOOKING_FEE_PER_TICKET : 0), 0);
+  tickets.reduce((sum, t) => sum + (t.price > 0 ? Number(qty[t.id] || 0) * BOOKING_FEE_PER_TICKET : 0), 0);
 
 export const formatPrice = (n: number) =>
   new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP" }).format(n);

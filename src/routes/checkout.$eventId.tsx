@@ -514,12 +514,6 @@ function CheckoutPage() {
                       </span>
                     </div>
                   ))}
-                  {items.some((i: { ticket: TicketType }) => i.ticket.blueBadge) && (
-                    <p className="text-xs leading-relaxed text-[#1d4ed8] bg-[#1d4ed8]/5 border border-[#1d4ed8]/15 rounded-lg px-3 py-2">
-                      Blue badge parking: please have your blue badge with you on arrival and park
-                      as directed by staff.
-                    </p>
-                  )}
                 </div>
                 <div className="space-y-2 text-sm">
                   <Row label="Subtotal" value={formatPrice(subtotal)} />

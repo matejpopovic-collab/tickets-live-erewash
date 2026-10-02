@@ -254,8 +254,8 @@ function EventPage() {
                 </div>
                 <p className="text-xs text-muted-foreground -mt-2 mb-4">
                   {fee > 0
-                    ? `+ ${formatPrice(fee)} booking fee (${formatPrice(BOOKING_FEE_PER_TICKET)} per ticket)`
-                    : `+ ${formatPrice(BOOKING_FEE_PER_TICKET)} booking fee per ticket · none on free tickets or parking`}
+                    ? `+ ${formatPrice(fee)} booking fee (${formatPrice(BOOKING_FEE_PER_TICKET)} per ticket or car park space)`
+                    : `+ ${formatPrice(BOOKING_FEE_PER_TICKET)} booking fee per ticket or car park space · none on free tickets`}
                 </p>
                 <button
                   onClick={goCheckout}
@@ -413,69 +413,31 @@ function ParkingSection({
 
       {carParks
         .filter((c) => c.blueBadge)
-        .map((c) => {
-          const n = qty[c.id] || 0;
-          const max = Math.min(8, c.capacity ?? 8);
-          const selected = n > 0;
-          return (
-            <div
-              key={c.id}
-              className={`mt-3 rounded-2xl border p-4 sm:p-5 transition-all duration-200 ${
-                selected
-                  ? "border-[#1d4ed8] bg-[#1d4ed8]/5 shadow-[0_0_0_3px] shadow-[#1d4ed8]/10"
-                  : "border-[#1d4ed8]/20 bg-[#1d4ed8]/5 hover:border-[#1d4ed8]/40"
-              }`}
-            >
-              <div className="flex items-start gap-3">
-                <span className="size-10 shrink-0 rounded-xl bg-[#1d4ed8] text-white flex items-center justify-center">
-                  {selected ? <Check className="size-5" /> : <Accessibility className="size-5" />}
-                </span>
-                <div className="min-w-0">
-                  <p className="font-semibold text-sm flex flex-wrap items-center gap-2">
-                    {c.name}
-                    <span className="rounded-full bg-success/15 px-2 py-0.5 text-[11px] font-semibold text-success">
-                      Free
-                    </span>
-                  </p>
-                  <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
-                    Free parking for disabled users only. Please have your blue badge upon arrival
-                    for access and park as directed by staff. Please note there are a limited
-                    number of parking spaces.
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center justify-between gap-3 pt-4 mt-4 border-t border-[#1d4ed8]/15">
-                <p className="text-sm">
-                  <span className="font-bold text-success">Free</span>
-                  <span className="text-muted-foreground"> · blue badge required</span>
+        .map((c) => (
+          <div
+            key={c.id}
+            className="mt-3 rounded-2xl border border-[#1d4ed8]/20 bg-[#1d4ed8]/5 p-4 sm:p-5"
+          >
+            <div className="flex items-start gap-3">
+              <span className="size-10 shrink-0 rounded-xl bg-[#1d4ed8] text-white flex items-center justify-center">
+                <Accessibility className="size-5" />
+              </span>
+              <div className="min-w-0">
+                <p className="font-semibold text-sm flex flex-wrap items-center gap-2">
+                  {c.name}
+                  <span className="rounded-full bg-success/15 px-2 py-0.5 text-[11px] font-semibold text-success">
+                    Free
+                  </span>
                 </p>
-                {c.available ? (
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => setQty(c.id, n - 1)}
-                      disabled={n === 0}
-                      className="size-8 border border-border bg-white rounded-full flex items-center justify-center text-lg disabled:opacity-30 hover:border-[#1d4ed8] transition-colors cursor-pointer"
-                      aria-label={`Remove a car from ${c.name}`}
-                    >
-                      −
-                    </button>
-                    <span className="w-5 text-center font-bold tabular-nums text-sm">{n}</span>
-                    <button
-                      onClick={() => setQty(c.id, n + 1)}
-                      disabled={n >= max}
-                      className="size-8 border border-border bg-white rounded-full flex items-center justify-center text-lg disabled:opacity-30 hover:border-[#1d4ed8] transition-colors cursor-pointer"
-                      aria-label={`Add a car to ${c.name}`}
-                    >
-                      +
-                    </button>
-                  </div>
-                ) : (
-                  <span className="text-xs font-bold uppercase text-danger">Full</span>
-                )}
+                <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
+                  Free parking for disabled users only. Please have your blue badge upon arrival
+                  for access and park as directed by staff. Please note there are a limited
+                  number of parking spaces.
+                </p>
               </div>
             </div>
-          );
-        })}
+          </div>
+        ))}
     </section>
   );
 }
@@ -496,7 +458,7 @@ function ParkingSummary({ carParks, qty }: { carParks: TicketType[]; qty: Record
         <span className="flex-1 min-w-0">
           <span className="block text-sm font-semibold">Add parking</span>
           <span className="block text-xs text-muted-foreground">
-            {formatPrice(from)} per car · free blue badge parking
+            {formatPrice(from)} per car + {formatPrice(BOOKING_FEE_PER_TICKET)} booking fee
           </span>
         </span>
         <ChevronDown className="size-4 text-muted-foreground group-hover:text-accent-blue" />
