@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { ChevronRight, ChevronDown, AlertTriangle, CalendarDays, MapPin, Car, Check, Accessibility } from "lucide-react";
+import { useMemo, useState, type ReactNode } from "react";
+import { ChevronRight, ChevronDown, AlertTriangle, CalendarDays, MapPin, Car, Accessibility, Ticket } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { TrustBadges } from "@/components/trust-badges";
@@ -64,6 +64,10 @@ function EventPage() {
 
   const entryTickets = event.ticketTypes.filter((t: TicketType) => t.category !== "vehicle");
   const carParks = event.ticketTypes.filter((t: TicketType) => t.category === "vehicle");
+  // Paid car parks are booked in the ticket box; Blue Badge is info-only (see Parking section).
+  const paidCarParks = carParks
+    .filter((t: TicketType) => !t.blueBadge)
+    .map((t: TicketType) => ({ ...t, description: undefined }));
   const carQty = carParks.reduce((a: number, t: TicketType) => a + (qty[t.id] || 0), 0);
   const ticketQty = totalQty - carQty;
   const qtyLabel = [
@@ -156,7 +160,7 @@ function EventPage() {
 
             {/* Parking */}
             {carParks.length > 0 && (
-              <ParkingSection carParks={carParks} qty={qty} setQty={setTicketQty} />
+              <ParkingSection carParks={carParks} />
             )}
 
             {/* Important information */}
@@ -180,15 +184,26 @@ function EventPage() {
               <p className="text-xs text-muted-foreground mb-4">
                 Discounted online prices until 4 Nov · full price from 5 Nov
               </p>
+              <TicketGroupTitle icon={<Ticket className="size-4 text-accent-blue" />}>
+                Event tickets
+              </TicketGroupTitle>
               <TicketList
                 tickets={entryTickets}
                 qty={qty}
                 setQty={setTicketQty}
                 fixtureStatus={fixture.status}
               />
-              {carParks.length > 0 && (
-                <div className="mt-6">
-                  <ParkingSummary carParks={carParks} qty={qty} />
+              {paidCarParks.length > 0 && (
+                <div className="mt-7 pt-6 border-t border-border">
+                  <TicketGroupTitle icon={<Car className="size-4 text-accent-blue" />}>
+                    Parking
+                  </TicketGroupTitle>
+                  <TicketList
+                    tickets={paidCarParks}
+                    qty={qty}
+                    setQty={setTicketQty}
+                    fixtureStatus={fixture.status}
+                  />
                 </div>
               )}
             </div>
@@ -224,9 +239,9 @@ function EventPage() {
             </details>
           </div>
 
-          {/* Right: sticky ticket box (desktop) */}
+          {/* Right: ticket box (desktop) */}
           <aside className="hidden md:block">
-            <div className="sticky top-20 bg-white border border-border rounded-2xl shadow-lg p-6">
+            <div className="bg-white border border-border rounded-2xl shadow-lg p-6">
               <h3 className="font-bold text-lg mb-0.5">Select tickets</h3>
               <p className="text-xs text-muted-foreground mb-1">
                 {formatDate(fixture.date)} · Gates {fixture.doorsTime}
@@ -234,15 +249,26 @@ function EventPage() {
               <p className="text-xs text-muted-foreground mb-5">
                 Discounted online prices until 4 Nov · full price from 5 Nov
               </p>
+              <TicketGroupTitle icon={<Ticket className="size-4 text-accent-blue" />}>
+                Event tickets
+              </TicketGroupTitle>
               <TicketList
                 tickets={entryTickets}
                 qty={qty}
                 setQty={setTicketQty}
                 fixtureStatus={fixture.status}
               />
-              {carParks.length > 0 && (
-                <div className="mt-5">
-                  <ParkingSummary carParks={carParks} qty={qty} />
+              {paidCarParks.length > 0 && (
+                <div className="mt-6 pt-5 border-t border-border">
+                  <TicketGroupTitle icon={<Car className="size-4 text-accent-blue" />}>
+                    Parking
+                  </TicketGroupTitle>
+                  <TicketList
+                    tickets={paidCarParks}
+                    qty={qty}
+                    setQty={setTicketQty}
+                    fixtureStatus={fixture.status}
+                  />
                 </div>
               )}
               <div className="pt-5 mt-5 border-t border-border">
@@ -311,19 +337,7 @@ function EventPage() {
   );
 }
 
-function scrollToParking() {
-  document.getElementById("parking")?.scrollIntoView({ behavior: "smooth", block: "start" });
-}
-
-function ParkingSection({
-  carParks,
-  qty,
-  setQty,
-}: {
-  carParks: TicketType[];
-  qty: Record<string, number>;
-  setQty: (id: string, n: number) => void;
-}) {
+function ParkingSection({ carParks }: { carParks: TicketType[] }) {
   return (
     <section id="parking" className="mb-8 scroll-mt-24">
       <div className="mb-4">
@@ -338,85 +352,12 @@ function ParkingSection({
         </div>
       </div>
 
-      <div className="grid sm:grid-cols-2 gap-3">
-        {carParks.filter((c) => !c.blueBadge).map((c, i) => {
-          const n = qty[c.id] || 0;
-          const max = Math.min(8, c.capacity ?? 8);
-          const selected = n > 0;
-          return (
-            <div
-              key={c.id}
-              className={`relative rounded-2xl border p-5 transition-all duration-200 ${
-                selected
-                  ? "border-accent-blue bg-accent-blue/5 shadow-[0_0_0_3px] shadow-accent-blue/10"
-                  : "border-border bg-white hover:border-accent-blue/40 hover:shadow-md"
-              }`}
-            >
-              <div className="flex items-start justify-between gap-3 mb-4 sm:mb-6">
-                <div className="flex items-center gap-3">
-                  <span
-                    className={`size-10 rounded-xl flex items-center justify-center text-base font-bold transition-colors ${
-                      selected ? "bg-accent-blue text-white" : "bg-surface border border-border text-foreground"
-                    }`}
-                  >
-                    {selected ? <Check className="size-5" /> : "P"}
-                  </span>
-                  <div>
-                    <p className="text-[10px] uppercase font-medium tracking-wider text-muted-foreground">
-                      {c.description ?? `Car park ${i + 1}`}
-                    </p>
-                    <p className="font-semibold text-sm leading-snug">{c.name}</p>
-                  </div>
-                </div>
-              </div>
-
-              {c.capacity !== undefined && (
-                <p className="mb-4 inline-flex items-center gap-1.5 rounded-full bg-warning/10 px-2.5 py-1 text-[11px] font-semibold text-warning">
-                  <span className="size-1.5 rounded-full bg-warning" />
-                  Only {c.capacity} spaces
-                </p>
-              )}
-
-              <div className="flex items-center justify-between gap-3 pt-4 border-t border-border">
-                <p className="text-sm">
-                  <span className="font-bold text-accent-blue">{formatPrice(c.price)}</span>
-                  <span className="text-muted-foreground"> per car</span>
-                </p>
-                {c.available ? (
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => setQty(c.id, n - 1)}
-                      disabled={n === 0}
-                      className="size-8 border border-border bg-white rounded-full flex items-center justify-center text-lg disabled:opacity-30 hover:border-accent-blue transition-colors cursor-pointer"
-                      aria-label={`Remove a car from ${c.name}`}
-                    >
-                      −
-                    </button>
-                    <span className="w-5 text-center font-bold tabular-nums text-sm">{n}</span>
-                    <button
-                      onClick={() => setQty(c.id, n + 1)}
-                      disabled={n >= max}
-                      className="size-8 border border-border bg-white rounded-full flex items-center justify-center text-lg disabled:opacity-30 hover:border-accent-blue transition-colors cursor-pointer"
-                      aria-label={`Add a car to ${c.name}`}
-                    >
-                      +
-                    </button>
-                  </div>
-                ) : (
-                  <span className="text-xs font-bold uppercase text-danger">Full</span>
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
       {carParks
         .filter((c) => c.blueBadge)
         .map((c) => (
           <div
             key={c.id}
-            className="mt-3 rounded-2xl border border-[#1d4ed8]/20 bg-[#1d4ed8]/5 p-4 sm:p-5"
+            className="rounded-2xl border border-[#1d4ed8]/20 bg-[#1d4ed8]/5 p-4 sm:p-5"
           >
             <div className="flex items-start gap-3">
               <span className="size-10 shrink-0 rounded-xl bg-[#1d4ed8] text-white flex items-center justify-center">
@@ -439,60 +380,6 @@ function ParkingSection({
           </div>
         ))}
     </section>
-  );
-}
-
-function ParkingSummary({ carParks, qty }: { carParks: TicketType[]; qty: Record<string, number> }) {
-  const chosen = carParks.filter((c) => (qty[c.id] || 0) > 0);
-  const from = Math.min(...carParks.filter((c) => c.price > 0).map((c) => c.price));
-
-  if (chosen.length === 0) {
-    return (
-      <button
-        onClick={scrollToParking}
-        className="group w-full flex items-center gap-3 rounded-xl border border-dashed border-border px-3.5 py-3 text-left hover:border-accent-blue hover:bg-accent-blue/5 transition-colors cursor-pointer"
-      >
-        <span className="size-8 rounded-lg bg-surface border border-border flex items-center justify-center shrink-0 group-hover:border-accent-blue/40">
-          <Car className="size-4 text-accent-blue" />
-        </span>
-        <span className="flex-1 min-w-0">
-          <span className="block text-sm font-semibold">Add parking</span>
-          <span className="block text-xs text-muted-foreground">
-            {formatPrice(from)} per car + {formatPrice(BOOKING_FEE_PER_TICKET)} booking fee
-          </span>
-        </span>
-        <ChevronDown className="size-4 text-muted-foreground group-hover:text-accent-blue" />
-      </button>
-    );
-  }
-
-  return (
-    <div className="rounded-xl bg-accent-blue/5 border border-accent-blue/20 px-3.5 py-3">
-      <div className="flex items-center justify-between mb-2">
-        <p className="text-sm font-semibold flex items-center gap-2">
-          <Car className="size-4 text-accent-blue" />
-          Parking
-        </p>
-        <button
-          onClick={scrollToParking}
-          className="text-xs font-semibold text-accent-blue hover:opacity-80 cursor-pointer"
-        >
-          Edit
-        </button>
-      </div>
-      <ul className="space-y-1">
-        {chosen.map((c) => (
-          <li key={c.id} className="flex justify-between gap-3 text-xs">
-            <span className="text-muted-foreground">
-              {qty[c.id]} × {c.name.replace(/ Car Park$/, "")}
-            </span>
-            <span className="font-semibold tabular-nums">
-              {c.price === 0 ? "Free" : formatPrice((qty[c.id] || 0) * c.price)}
-            </span>
-          </li>
-        ))}
-      </ul>
-    </div>
   );
 }
 
@@ -554,6 +441,15 @@ function AvailabilityBadge({
       <span className="size-1.5 rounded-full bg-success inline-block" />
       Available
     </span>
+  );
+}
+
+function TicketGroupTitle({ icon, children }: { icon: ReactNode; children: ReactNode }) {
+  return (
+    <h4 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">
+      {icon}
+      {children}
+    </h4>
   );
 }
 
