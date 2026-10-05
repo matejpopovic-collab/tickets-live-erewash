@@ -39,7 +39,7 @@ function Index() {
         <div className="absolute inset-0 bg-black/60" />
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
           <h1 className="hero-title-fx leading-tight md:whitespace-nowrap">
-            {activeOrg ? `${activeOrg.name} Events` : "Sparks in the Park"}
+            {activeOrg ? `${activeOrg.name} Events` : "The Greatest Show in the Sky"}
           </h1>
           <p className="mt-4 text-white text-[24px]">
             {activeOrg ? (

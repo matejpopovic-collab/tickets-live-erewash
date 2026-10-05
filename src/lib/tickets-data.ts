@@ -60,10 +60,10 @@ export const events: Event[] = [
   {
     id: "erewash",
     orgId: "apex-arenas",
-    name: "Sparks in the Park - Bonfire and Firework Display",
+    name: "The Greatest Show in the Sky - Bonfire and Firework Display",
     tagline: "Fairground rides, a roaring bonfire and a dazzling 30-minute fireworks display",
     description:
-      "Erewash Borough Council presents Sparks in the Park - a magical Bonfire Night at West Park, Long Eaton. Gates open at 5pm, the bonfire is lit from 6.30pm, and a dazzling 30-minute fireworks display begins at 7.30pm.\n\nBring the whole family for fairground rides, delicious food stalls and live entertainment at one of the biggest bonfire nights in the area. Family tickets are available for a great-value evening of entertainment and fun - soak up the festive atmosphere, enjoy a variety of tasty treats and warm drinks, and make memories with friends and loved ones as we celebrate this much-loved community tradition.\n\nBook online in advance to pay the discounted price; from 5 November all tickets are sold at the full on-the-night price. Wrap up warm and join us for a night of fun, laughter and community spirit at West Park.",
+      "Erewash Borough Council presents The Greatest Show in the Sky - a magical Bonfire Night at West Park, Long Eaton. Gates open at 5pm, the bonfire is lit from 6.30pm, and a dazzling 30-minute fireworks display begins at 7.30pm.\n\nBring the whole family for fairground rides, delicious food stalls and live entertainment at one of the biggest bonfire nights in the area. Family tickets are available for a great-value evening of entertainment and fun - soak up the festive atmosphere, enjoy a variety of tasty treats and warm drinks, and make memories with friends and loved ones as we celebrate this much-loved community tradition.\n\nBook online in advance to pay the discounted price; from 5 November all tickets are sold at the full on-the-night price. Wrap up warm and join us for a night of fun, laughter and community spirit at West Park.",
     venue: "West Park",
     address: "Wilsthorpe Road, Long Eaton NG10 4AA",
     image: erewashCrest,
