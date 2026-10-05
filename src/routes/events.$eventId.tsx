@@ -158,11 +158,6 @@ function EventPage() {
               </div>
             </div>
 
-            {/* Parking */}
-            {carParks.length > 0 && (
-              <ParkingSection carParks={carParks} />
-            )}
-
             {/* Important information */}
             <div className="mb-8 bg-warning/10 border border-warning/30 rounded-xl p-5">
               <h2 className="font-semibold text-base mb-3 flex items-center gap-2">
@@ -204,6 +199,7 @@ function EventPage() {
                     setQty={setTicketQty}
                     fixtureStatus={fixture.status}
                   />
+                  <BlueBadgeNote carParks={carParks} />
                 </div>
               )}
             </div>
@@ -269,6 +265,7 @@ function EventPage() {
                     setQty={setTicketQty}
                     fixtureStatus={fixture.status}
                   />
+                  <BlueBadgeNote carParks={carParks} />
                 </div>
               )}
               <div className="pt-5 mt-5 border-t border-border">
@@ -337,49 +334,29 @@ function EventPage() {
   );
 }
 
-function ParkingSection({ carParks }: { carParks: TicketType[] }) {
+function BlueBadgeNote({ carParks }: { carParks: TicketType[] }) {
+  const badge = carParks.find((c) => c.blueBadge);
+  if (!badge) return null;
   return (
-    <section id="parking" className="mb-8 scroll-mt-24">
-      <div className="mb-4">
-        <div>
-          <h2 className="font-semibold text-base mb-1 flex items-center gap-2">
-            <Car className="size-4 text-accent-blue" />
-            Pre-book parking
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            Spaces are limited, so book your car in with your tickets.
+    <div className="mt-5 rounded-xl border border-[#1d4ed8]/20 bg-[#1d4ed8]/5 p-3.5">
+      <div className="flex items-start gap-3">
+        <span className="size-8 shrink-0 rounded-lg bg-[#1d4ed8] text-white flex items-center justify-center">
+          <Accessibility className="size-4" />
+        </span>
+        <div className="min-w-0">
+          <p className="font-semibold text-sm flex flex-wrap items-center gap-2">
+            {badge.name}
+            <span className="rounded-full bg-success/15 px-2 py-0.5 text-[11px] font-semibold text-success">
+              Free
+            </span>
+          </p>
+          <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+            For disabled users only - no booking needed. Show your blue badge on arrival and park
+            as directed by staff. Spaces are limited.
           </p>
         </div>
       </div>
-
-      {carParks
-        .filter((c) => c.blueBadge)
-        .map((c) => (
-          <div
-            key={c.id}
-            className="rounded-2xl border border-[#1d4ed8]/20 bg-[#1d4ed8]/5 p-4 sm:p-5"
-          >
-            <div className="flex items-start gap-3">
-              <span className="size-10 shrink-0 rounded-xl bg-[#1d4ed8] text-white flex items-center justify-center">
-                <Accessibility className="size-5" />
-              </span>
-              <div className="min-w-0">
-                <p className="font-semibold text-sm flex flex-wrap items-center gap-2">
-                  {c.name}
-                  <span className="rounded-full bg-success/15 px-2 py-0.5 text-[11px] font-semibold text-success">
-                    Free
-                  </span>
-                </p>
-                <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
-                  Free parking for disabled users only. Please have your blue badge upon arrival
-                  for access and park as directed by staff. Please note there are a limited
-                  number of parking spaces.
-                </p>
-              </div>
-            </div>
-          </div>
-        ))}
-    </section>
+    </div>
   );
 }
 
