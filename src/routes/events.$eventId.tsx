@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState, type ReactNode } from "react";
+import { useId, useMemo, useRef, useState, type ReactNode } from "react";
 import { ChevronRight, ChevronDown, AlertTriangle, CalendarDays, MapPin, Car, Accessibility, Ticket } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
@@ -350,12 +350,53 @@ function BlueBadgeNote({ carParks }: { carParks: TicketType[] }) {
               Free
             </span>
           </p>
-          <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-            For disabled users only - no booking needed. Show your blue badge on arrival and park
-            as directed by staff. Spaces are limited.
-          </p>
+          <CollapsibleNote>
+            Disabled access: Step-free access is available via pathways throughout the event site.
+            Please note that parts of the event take place on grass, which may be uneven underfoot.
+            An accessible viewing area, accessible toilet and free accessible parking spaces are
+            available in West Park Leisure Centre Car Park. Please display your Blue Badge to gain
+            access.{" "}
+            <strong className="font-semibold text-foreground">Spaces are limited</strong> and
+            available on a first-come, first-served basis.
+          </CollapsibleNote>
         </div>
       </div>
+    </div>
+  );
+}
+
+const NOTE_COLLAPSED_HEIGHT = 39; // 2 lines of text-xs / leading-relaxed
+
+function CollapsibleNote({ children }: { children: ReactNode }) {
+  const [expanded, setExpanded] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const id = useId();
+  const fullHeight = ref.current?.scrollHeight;
+
+  return (
+    <div className="mt-1">
+      <div
+        ref={ref}
+        id={id}
+        className="overflow-hidden transition-[max-height] duration-300 ease-in-out"
+        style={{
+          maxHeight: expanded ? (fullHeight ?? 1000) : NOTE_COLLAPSED_HEIGHT,
+          WebkitMaskImage: expanded ? "none" : "linear-gradient(to bottom, black 40%, transparent)",
+          maskImage: expanded ? "none" : "linear-gradient(to bottom, black 40%, transparent)",
+        }}
+      >
+        <p className="text-xs text-muted-foreground leading-relaxed">{children}</p>
+      </div>
+      <button
+        type="button"
+        onClick={() => setExpanded((v) => !v)}
+        aria-expanded={expanded}
+        aria-controls={id}
+        className="mt-1.5 inline-flex items-center gap-1 text-xs font-semibold text-accent-blue hover:opacity-80 transition-opacity cursor-pointer"
+      >
+        {expanded ? "Read less" : "Read more"}
+        <ChevronDown className={`size-3.5 transition-transform duration-300 ${expanded ? "rotate-180" : ""}`} />
+      </button>
     </div>
   );
 }

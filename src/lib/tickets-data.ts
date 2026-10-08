@@ -63,7 +63,7 @@ export const events: Event[] = [
     name: "The Greatest Show in the Sky - Bonfire and Firework Display",
     tagline: "Fairground rides, a roaring bonfire and a dazzling 30-minute fireworks display",
     description:
-      "Erewash Borough Council presents The Greatest Show in the Sky - a magical Bonfire Night at West Park, Long Eaton. Gates open at 5pm, the bonfire is lit from 6.30pm, and a dazzling 30-minute fireworks display begins at 7.30pm.\n\nBring the whole family for fairground rides, delicious food stalls and live entertainment at one of the biggest bonfire nights in the area. Family tickets are available for a great-value evening of entertainment and fun - soak up the festive atmosphere, enjoy a variety of tasty treats and warm drinks, and make memories with friends and loved ones as we celebrate this much-loved community tradition.\n\nBook online in advance to pay the discounted price; from 5 November all tickets are sold at the full on-the-night price. Wrap up warm and join us for a night of fun, laughter and community spirit at West Park.",
+      "Erewash Borough Council presents The Greatest Show in the Sky - a magical Bonfire Night at West Park, Long Eaton. Gates open at 5pm, the bonfire is lit from 6.30pm, and a dazzling 30-minute fireworks display begins at 7.30pm.\n\nBring the whole family for fairground rides and delicious food stalls with our great family value tickets.\n\nBook online in advance to pay the discounted price; from 5 November all tickets are sold at the full on-the-night price. Wrap up warm and join us for a night of fun, laughter and community spirit at West Park.",
     venue: "West Park",
     address: "Wilsthorpe Road, Long Eaton NG10 4AA",
     image: erewashCrest,
@@ -84,9 +84,9 @@ export const events: Event[] = [
     faq: [
       { q: "What time do gates open?", a: "Gates open at 5pm. The bonfire is lit from 6.30pm and the 30-minute fireworks display begins at 7.30pm." },
       { q: "Why are tickets cheaper online?", a: "Online and prepaid tickets are discounted: \u00a38 adult, \u00a35 for 16 and under or over 60, and \u00a320 family. You can buy at these prices up to and including 4 November. From 5 November onward all tickets are full price - \u00a310 adult, \u00a37 concession and \u00a325 family. Children aged 5 and under go free either way." },
-      { q: "What is there to do besides the fireworks?", a: "There are fairground rides, food and drink stalls and live entertainment throughout the evening, plus the bonfire itself from 6.30pm." },
+      { q: "What is there to do besides the fireworks?", a: "There are fairground rides and food and drink stalls throughout the evening, plus the bonfire itself from 6.30pm." },
       { q: "Are tickets refundable?", a: "Refunds are available up to 7 days before the event. Booking fees are non-refundable." },
-      { q: "Is the venue accessible?", a: "Yes. Step-free access, accessible toilets and BSL interpretation are available - contact us in advance. Disabled access - with viewing area and free car parking spaces at West Park Leisure Centre's Car Park. Please have your blue badge to gain access; please note there are a limited number of spaces." },
+      { q: "Is the venue accessible?", a: "Yes. Step-free access and accessible toilets are available - contact us in advance. Disabled access - with viewing area and free car parking spaces at West Park Leisure Centre's Car Park. Please have your blue badge to gain access; please note there are a limited number of spaces." },
     ],
     terms: "Discounted prepaid and online tickets are available up to and including 4 November 2026. From 5 November onward, all tickets are sold at the full on-the-night price. Children aged 5 and under are admitted free. Tickets are personal to the buyer and may not be resold above face value.",
   },
